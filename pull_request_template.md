@@ -1,9 +1,15 @@
-## Describe your changes
+### Pull Request description
 
-## Issue ticket number and link
+### Visual Evidences (if needed)
 
-## Checklist before requesting a review
-    [] I have performed a self-review of my code
-    [] If it is a core feature, I have added thorough tests.
-    [] Do we need to implement analytics?
-    [] Will this be part of a product update? If yes, please write one phrase about this update.
+<!--  To set imagens or videos  use
+<img width = 300 src ="link of the image">
+<video src ="link of the video">
+-->
+
+### Checklist before merge
+
+- [x] PR labels set
+- [ ] Evidence of changes
+- [ ] Unit Tests made (if necessary)
+- [ ] UI tests made (if necessary)
