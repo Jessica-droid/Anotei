@@ -1,6 +1,6 @@
 ### Pull Request description
 
-### Visual Evidences (if needed)
+### Visual Evidences
 
 <!--  To set imagens or videos  use
 <img width = 300 src ="link of the image">
