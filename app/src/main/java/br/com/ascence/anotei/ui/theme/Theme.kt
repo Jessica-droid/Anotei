@@ -16,11 +16,11 @@ fun AnoteiTheme(
     spaces: ThemeSpacing = AnoteiAppTheme.spaces,
     typography: Typography = AnoteiAppTheme.typography,
     lightColors: ThemeColors = AnoteiAppTheme.colors,
-    darkColors: ThemeColors? = null,
+    darkColors: ThemeColors = darkThemeColors(),
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val currentColor = remember { if (darkColors != null && darkTheme) darkColors else lightColors }
+    val currentColor = remember { if (darkTheme) darkColors else lightColors }
     val rememberedColors = remember { currentColor.copy() }.apply { updateColorsFrom(lightColors) }
 
     val view = LocalView.current
