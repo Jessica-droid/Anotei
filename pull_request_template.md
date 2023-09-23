@@ -7,6 +7,13 @@
 <video src ="link of the video">
 -->
 
+<!-- To set tables use
+| column_title | column_title |
+| --- | --- |
+| row_content | row_content |
+| row_content | row_content |
+-->
+
 ### Checklist before merge
 
 - [x] PR labels set
