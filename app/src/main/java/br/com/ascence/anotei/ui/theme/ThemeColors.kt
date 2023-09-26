@@ -11,6 +11,7 @@ class ThemeColors(
     primaryTextColor: Color,
     secondaryTextColor: Color,
     secondaryBackgroundColor: Color,
+    tertiaryTextColor: Color,
     accentColor: Color,
     primaryButtonTextColor: Color,
     menuColor: Color,
@@ -29,6 +30,9 @@ class ThemeColors(
         private set
 
     var secondaryTextColor by mutableStateOf(secondaryTextColor)
+        private set
+
+    var tertiaryTextColor by mutableStateOf(tertiaryTextColor)
         private set
 
     var secondaryBackgroundColor by mutableStateOf(secondaryBackgroundColor)
@@ -80,6 +84,7 @@ class ThemeColors(
         primaryTextColor: Color = this.primaryTextColor,
         secondaryTextColor: Color = this.secondaryTextColor,
         secondaryBackgroundColor: Color = this.secondaryBackgroundColor,
+        tertiaryTextColor: Color = this.tertiaryTextColor,
         accentColor: Color = this.accentColor,
         primaryButtonTextColor: Color = this.primaryButtonTextColor,
         menuColor: Color = this.menuColor,
@@ -97,6 +102,7 @@ class ThemeColors(
         primaryTextColor = primaryTextColor,
         secondaryTextColor = secondaryTextColor,
         secondaryBackgroundColor = secondaryBackgroundColor,
+        tertiaryTextColor = tertiaryTextColor,
         accentColor = accentColor,
         primaryButtonTextColor = primaryButtonTextColor,
         menuColor = menuColor,
@@ -116,6 +122,7 @@ class ThemeColors(
         primaryTextColor = other.primaryTextColor,
         secondaryTextColor = other.primaryTextColor,
         secondaryBackgroundColor = other.primaryTextColor,
+        tertiaryTextColor = other.tertiaryTextColor,
         accentColor = other.primaryTextColor,
         primaryButtonTextColor = other.primaryTextColor,
         menuColor = other.primaryTextColor,
