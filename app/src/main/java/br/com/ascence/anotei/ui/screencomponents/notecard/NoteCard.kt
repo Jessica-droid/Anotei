@@ -15,7 +15,9 @@ import br.com.ascence.anotei.model.NoteStatusType
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
-private const val CARD_CONTENT_MAX_LINES = 3
+private const val UNSELECTED_CARD_CONTENT_MAX_LINES = 3
+private const val CARD_CONTENT_PREVIEW =
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum"
 
 @Composable
 fun NoteCard(
@@ -28,7 +30,7 @@ fun NoteCard(
     modifier: Modifier = Modifier
 ) {
 
-    val contentMaxLines = if (isCardSelected) Int.MAX_VALUE else CARD_CONTENT_MAX_LINES
+    val contentMaxLines = if (isCardSelected) Int.MAX_VALUE else UNSELECTED_CARD_CONTENT_MAX_LINES
     val cardBackgroundColor = if (isCardSelected) AnoteiAppTheme.colors.selectedNoteColor
     else AnoteiAppTheme.colors.secondaryBackgroundColor
 
@@ -69,7 +71,7 @@ private fun NoteCardPreviewDark() {
         NoteCard(
             title = "Título",
             creationDate = "25 de Setembro",
-            noteContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+            noteContent = CARD_CONTENT_PREVIEW,
             noteColor = AnoteiAppTheme.colors.allChipColor,
             noteStatus = listOf(NoteStatusType.SCHEDULED, NoteStatusType.PROTECTED),
             isCardSelected = false
@@ -84,7 +86,7 @@ private fun NoteCardPreviewLight() {
         NoteCard(
             title = "Título",
             creationDate = "25 de Setembro",
-            noteContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+            noteContent = CARD_CONTENT_PREVIEW,
             noteColor = AnoteiAppTheme.colors.allChipColor,
             noteStatus = listOf(NoteStatusType.SCHEDULED, NoteStatusType.PROTECTED),
             isCardSelected = true
