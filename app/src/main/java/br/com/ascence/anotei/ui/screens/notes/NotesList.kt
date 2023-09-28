@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import br.com.ascence.anotei.data.mock.notesListMock
-import br.com.ascence.anotei.extension.getStatusPresentation
+import br.com.ascence.anotei.extension.toStatusPresentation
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.ui.screencomponents.notecard.NoteCard
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
@@ -31,7 +31,7 @@ fun NotesList(
                 creationDate = note.creationDate,
                 noteContent = note.description,
                 noteColor = AnoteiAppTheme.colors.allChipColor,
-                noteStatus = note.getStatusPresentation(),
+                noteStatus = note.toStatusPresentation(),
                 onCardClick = onNoteClick,
                 modifier = Modifier.padding(horizontal = AnoteiAppTheme.spaces.medium)
             )

@@ -4,7 +4,7 @@ import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.NoteStatus
 import br.com.ascence.anotei.model.NoteStatusPresentation
 
-fun Note.getStatusPresentation(): List<NoteStatusPresentation> =
+fun Note.toStatusPresentation(): List<NoteStatusPresentation> =
     status.map { noteStatus ->
         when (noteStatus) {
             NoteStatus.PROTECTED -> NoteStatusPresentation.PROTECTED
