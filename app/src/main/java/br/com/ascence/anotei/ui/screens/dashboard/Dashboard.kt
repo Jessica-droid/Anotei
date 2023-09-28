@@ -1,6 +1,5 @@
 package br.com.ascence.anotei.ui.screens.dashboard
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -17,7 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import br.com.ascence.anotei.ui.screens.notes.NotesEmptyState
+import br.com.ascence.anotei.data.mock.notesListMock
+import br.com.ascence.anotei.ui.screens.notes.NotesList
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
@@ -30,11 +30,10 @@ fun Dashboard() {
         floatingActionButton = { FAB() },
         floatingActionButtonPosition = FabPosition.Center,
     ) { innerPadding ->
-        NotesEmptyState(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(color = AnoteiAppTheme.colors.colorScheme.background)
+        NotesList(
+            notes = notesListMock,
+            onNoteClick = {},
+            modifier = Modifier.padding(innerPadding)
         )
     }
 }
