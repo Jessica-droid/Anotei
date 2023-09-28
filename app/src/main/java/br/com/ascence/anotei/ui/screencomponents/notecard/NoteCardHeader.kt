@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import br.com.ascence.anotei.model.NoteStatusType
+import br.com.ascence.anotei.model.NoteStatusPresentation
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
@@ -30,7 +30,7 @@ fun NoteCardHeader(
     title: String,
     creationDate: String,
     categoryColor: Color,
-    status: List<NoteStatusType>,
+    status: List<NoteStatusPresentation>,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -75,7 +75,7 @@ private fun TitleAndCategoryColor(title: String, color: Color) {
 }
 
 @Composable
-private fun NoteStatus(noteStatus: List<NoteStatusType>) {
+private fun NoteStatus(noteStatus: List<NoteStatusPresentation>) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(start = AnoteiAppTheme.spaces.xSmall)
@@ -99,7 +99,7 @@ private fun NoteCardHeaderPreviewLight() {
             title = "Título",
             creationDate = "25 de Setembro",
             categoryColor = AnoteiAppTheme.colors.allChipColor,
-            status = listOf(NoteStatusType.SCHEDULED, NoteStatusType.PROTECTED),
+            status = listOf(NoteStatusPresentation.SCHEDULED, NoteStatusPresentation.PROTECTED),
             modifier = Modifier
                 .fillMaxWidth()
                 .background(AnoteiAppTheme.colors.colorScheme.background)
@@ -115,7 +115,7 @@ private fun NoteCardHeaderPreviewDark() {
             title = "Título",
             creationDate = "25 de Setembro",
             categoryColor = AnoteiAppTheme.colors.allChipColor,
-            status = listOf(NoteStatusType.SCHEDULED, NoteStatusType.PROTECTED),
+            status = listOf(NoteStatusPresentation.SCHEDULED, NoteStatusPresentation.PROTECTED),
             modifier = Modifier
                 .fillMaxWidth()
                 .background(AnoteiAppTheme.colors.colorScheme.background)
