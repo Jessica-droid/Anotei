@@ -16,8 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import br.com.ascence.anotei.data.mock.notesListMock
-import br.com.ascence.anotei.ui.screens.notes.NotesList
+import br.com.ascence.anotei.ui.screens.notes.NotesListScreen
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
@@ -30,8 +29,7 @@ fun Dashboard() {
         floatingActionButton = { FAB() },
         floatingActionButtonPosition = FabPosition.Center,
     ) { innerPadding ->
-        NotesList(
-            notes = notesListMock,
+        NotesListScreen(
             onNoteClick = {},
             modifier = Modifier.padding(innerPadding)
         )
