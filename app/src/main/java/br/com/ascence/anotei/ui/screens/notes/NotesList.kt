@@ -9,10 +9,11 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import br.com.ascence.anotei.data.mock.notesListMock
-import br.com.ascence.anotei.extension.toStatusPresentation
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.ui.screencomponents.notecard.NoteCard
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
@@ -20,16 +21,21 @@ import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
 @Composable
 fun NotesListScreen(
-    onNoteClick: (Boolean) -> Unit,
+    onNoteClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: NotesListViewModel = NotesListViewModel(),
 ) {
 
     val notesListState by viewModel.uiState.collectAsState()
+    val selectedNote = remember { mutableStateOf("") }
 
     Notes(
         notes = notesListState.notes,
-        onNoteClick = onNoteClick,
+        selectedId = selectedNote.value,
+        onNoteClick = { noteId ->
+            selectedNote.value = noteId
+            onNoteClick()
+        },
         modifier = modifier,
     )
 }
@@ -37,9 +43,11 @@ fun NotesListScreen(
 @Composable
 private fun Notes(
     notes: List<Note>,
-    onNoteClick: (Boolean) -> Unit,
+    selectedId: String,
+    onNoteClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+
     val listState = rememberLazyListState()
 
     LazyColumn(
@@ -52,12 +60,9 @@ private fun Notes(
             key = { note -> note.id }
         ) { note ->
             NoteCard(
-                title = note.title,
-                creationDate = note.creationDate,
-                noteContent = note.description,
-                noteColor = AnoteiAppTheme.colors.allChipColor,
-                noteStatus = note.toStatusPresentation(),
+                note = note,
                 onCardClick = onNoteClick,
+                isCardSelected = note.id == selectedId,
                 modifier = Modifier.padding(horizontal = AnoteiAppTheme.spaces.medium)
             )
         }
@@ -70,6 +75,7 @@ private fun NotesListLightPreview() {
     AnoteiTheme(darkTheme = false) {
         Notes(
             notes = notesListMock,
+            selectedId = "",
             onNoteClick = {}
         )
     }
@@ -81,6 +87,7 @@ private fun NotesListDarkPreview() {
     AnoteiTheme(darkTheme = true) {
         Notes(
             notes = notesListMock,
+            selectedId = "",
             onNoteClick = {}
         )
     }
