@@ -86,7 +86,7 @@ private fun CardContent(
             Text(
                 text = note.description,
                 color = AnoteiAppTheme.colors.secondaryTextColor,
-                fontSize = AnoteiAppTheme.fontSizes.small,
+                fontSize = AnoteiAppTheme.fontSizes.medium,
                 maxLines = contentMaxLines,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.padding(top = AnoteiAppTheme.spaces.xSmall)
