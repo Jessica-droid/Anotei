@@ -1,5 +1,6 @@
 package br.com.ascence.anotei.ui.screens.notes
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
@@ -21,20 +22,31 @@ import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
 @Composable
 fun NotesListScreen(
-    onNoteClick: () -> Unit,
+    onNoteClick: (Boolean) -> Unit,
+    onBackPressed: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: NotesListViewModel = NotesListViewModel(),
 ) {
 
     val notesListState by viewModel.uiState.collectAsState()
     val selectedNote = remember { mutableStateOf("") }
+    val haveSelectedNote = remember { mutableStateOf(false) }
+
+    BackHandler(
+        enabled = haveSelectedNote.value
+    ) {
+        selectedNote.value = ""
+        haveSelectedNote.value = false
+        onBackPressed(haveSelectedNote.value)
+    }
 
     Notes(
         notes = notesListState.notes,
         selectedId = selectedNote.value,
         onNoteClick = { noteId ->
             selectedNote.value = noteId
-            onNoteClick()
+            haveSelectedNote.value = selectedNote.value.isNotEmpty()
+            onNoteClick(haveSelectedNote.value)
         },
         modifier = modifier,
     )
