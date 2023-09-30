@@ -81,7 +81,6 @@ private fun AppBar() =
         )
     )
 
-
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CreateNoteFAB(showButton: Boolean) =
