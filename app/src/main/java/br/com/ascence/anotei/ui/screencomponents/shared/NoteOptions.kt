@@ -14,8 +14,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.tooling.preview.Preview
 import br.com.ascence.anotei.model.NoteOptionsPresentationType
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
+import br.com.ascence.anotei.ui.theme.AnoteiTheme
+
+const val FAB_ICON_TEST_TAG = "NoteOptionFabIcon"
 
 @Composable
 fun NoteOptions(
@@ -66,17 +72,60 @@ fun NoteOptions(
                 }
             },
             floatingActionButton = {
-                FloatingActionButton(
-                    containerColor = AnoteiAppTheme.colors.colorScheme.primary,
-                    onClick = onFABClick
-                ) {
-                    Icon(
-                        imageVector = optionType.fabIcon,
-                        contentDescription = optionType.fabContentDescription,
-                        tint = optionType.fabIconColor()
-                    )
-                }
+                OptionMainAction(
+                    optionType = optionType,
+                    onFABClick = onFABClick
+                )
             }
+        )
+    }
+}
+
+@Composable
+fun OptionMainAction(
+    optionType: NoteOptionsPresentationType,
+    onFABClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) =
+    FloatingActionButton(
+        containerColor = AnoteiAppTheme.colors.colorScheme.primary,
+        onClick = onFABClick,
+        modifier = modifier
+    ) {
+        Icon(
+            imageVector = optionType.fabIcon,
+            contentDescription = optionType.fabContentDescription,
+            tint = optionType.fabIconColor(),
+            modifier = Modifier.testTag(FAB_ICON_TEST_TAG)
+        )
+    }
+
+@Preview
+@Composable
+private fun NoteOptionPreviewLight() {
+    AnoteiTheme(darkTheme = false) {
+        NoteOptions(
+            showBottomBar = true,
+            onCategoryClick = {},
+            onSchedulerClick = {},
+            onLockClick = {},
+            onFABClick = {},
+            optionType = NoteOptionsPresentationType.PREVIEW_MODE
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun NoteOptionPreviewDark() {
+    AnoteiTheme(darkTheme = true) {
+        NoteOptions(
+            showBottomBar = true,
+            onCategoryClick = {},
+            onSchedulerClick = {},
+            onLockClick = {},
+            onFABClick = {},
+            optionType = NoteOptionsPresentationType.EDIT_MODE
         )
     }
 }
