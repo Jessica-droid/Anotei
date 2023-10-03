@@ -125,7 +125,7 @@ private fun NoteOptionPreviewDark() {
             onSchedulerClick = {},
             onLockClick = {},
             onFABClick = {},
-            optionType = NoteOptionsPresentationType.EDIT_MODE
+            optionType = NoteOptionsPresentationType.PREVIEW_MODE
         )
     }
 }
