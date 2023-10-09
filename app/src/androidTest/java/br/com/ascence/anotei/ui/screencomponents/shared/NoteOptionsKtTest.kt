@@ -37,7 +37,7 @@ class NoteOptionsKtTest {
     }
 
     @Test
-    fun verifyCEditIconAccordingToPresentationType() {
+    fun verifyEditIconAccordingToPresentationType() {
         setup(NoteOptionsPresentationType.PREVIEW_MODE)
         composeTestRule.onNodeWithTag(FAB_ICON_TEST_TAG, useUnmergedTree = true)
             .assertContentDescriptionContains("Alterar nota")
