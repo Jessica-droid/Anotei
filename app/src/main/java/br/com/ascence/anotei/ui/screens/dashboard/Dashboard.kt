@@ -2,8 +2,11 @@ package br.com.ascence.anotei.ui.screens.dashboard
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -19,6 +22,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,13 +49,12 @@ fun Dashboard() {
         },
         floatingActionButtonPosition = FabPosition.Center,
         bottomBar = {
-            NoteOptions(
+            NoteOptionsBar(
                 showBottomBar = showNoteOptions.value,
                 onCategoryClick = {}, // TODO setup category update
                 onSchedulerClick = {}, // TODO setup scheduling update
                 onLockClick = {}, // TODO setup lock state update
                 onFABClick = {}, // TODO setup note edit
-                optionType = NoteOptionsPresentationType.PREVIEW_MODE
             )
         }
     ) { innerPadding ->
@@ -87,7 +90,7 @@ private fun AppBar() =
 @Composable
 private fun CreateNoteFAB(
     showButton: Boolean,
-    onFabClick: ()-> Unit
+    onFabClick: () -> Unit,
 ) =
     AnimatedVisibility(
         visible = showButton,
@@ -105,6 +108,35 @@ private fun CreateNoteFAB(
             )
         }
     }
+
+@Composable
+private fun NoteOptionsBar(
+    showBottomBar: Boolean,
+    onCategoryClick: () -> Unit,
+    onSchedulerClick: () -> Unit,
+    onLockClick: () -> Unit,
+    onFABClick: () -> Unit,
+) {
+    AnimatedVisibility(
+        visible = showBottomBar,
+        enter = expandVertically(
+            animationSpec = tween(200),
+            expandFrom = Alignment.Bottom
+        ),
+        exit = shrinkVertically(
+            animationSpec = tween(200),
+            shrinkTowards = Alignment.Bottom
+        )
+    ) {
+        NoteOptions(
+            onCategoryClick = onCategoryClick,
+            onSchedulerClick = onSchedulerClick,
+            onLockClick = onLockClick,
+            onFABClick = onFABClick,
+            optionType = NoteOptionsPresentationType.PREVIEW_MODE
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
