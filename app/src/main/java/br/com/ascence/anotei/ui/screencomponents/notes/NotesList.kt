@@ -1,4 +1,4 @@
-package br.com.ascence.anotei.ui.screens.notes
+package br.com.ascence.anotei.ui.screencomponents.notes
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -13,8 +13,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import br.com.ascence.anotei.data.mock.notesListMock
+import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.ui.screencomponents.notecard.NoteCard
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
@@ -81,22 +81,10 @@ private fun Notes(
     }
 }
 
-@Preview(showBackground = true)
+@ColorSchemePreviews
 @Composable
 private fun NotesListLightPreview() {
-    AnoteiTheme(darkTheme = false) {
-        Notes(
-            notes = notesListMock,
-            selectedId = "",
-            onNoteClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun NotesListDarkPreview() {
-    AnoteiTheme(darkTheme = true) {
+    AnoteiTheme {
         Notes(
             notes = notesListMock,
             selectedId = "",

@@ -25,10 +25,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.NoteOptionsPresentationType
+import br.com.ascence.anotei.ui.screencomponents.notes.NotesListScreen
 import br.com.ascence.anotei.ui.screencomponents.shared.NoteOptions
-import br.com.ascence.anotei.ui.screens.notes.NotesListScreen
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
@@ -72,7 +72,7 @@ fun Dashboard() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun AppBar() =
+private fun AppBar() {
     TopAppBar(
         title = {
             Text(
@@ -85,13 +85,14 @@ private fun AppBar() =
             containerColor = AnoteiAppTheme.colors.colorScheme.background
         )
     )
+}
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CreateNoteFAB(
     showButton: Boolean,
     onFabClick: () -> Unit,
-) =
+) {
     AnimatedVisibility(
         visible = showButton,
         enter = scaleIn(),
@@ -108,6 +109,7 @@ private fun CreateNoteFAB(
             )
         }
     }
+}
 
 @Composable
 private fun NoteOptionsBar(
@@ -138,18 +140,10 @@ private fun NoteOptionsBar(
     }
 }
 
-@Preview(showBackground = true)
+@ColorSchemePreviews
 @Composable
-fun DashboardPreviewLight() {
-    AnoteiTheme(darkTheme = false) {
-        Dashboard()
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DashboardPreviewDark() {
-    AnoteiTheme(darkTheme = true) {
+fun DashboardPreview() {
+    AnoteiTheme {
         Dashboard()
     }
 }
