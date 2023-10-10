@@ -23,8 +23,9 @@ val lightFifithChipColor = Color(0xFF60BA5C)
 val lightLockColor = Color(0xFFC69A53)
 val lightAppTitleColor = Color(0xFF438CBA)
 val lightSelectedNoteColor = Color(0xFFD0EBEB)
+val lightBottomBarColor = Color(0xFFE7E8F0)
+val lightBottomBarFabColor = Color(0xFF7A819E)
 val lightStatusBarColor = Color(0xFF5396C6)
-
 
 // Dark Theme
 val darkPrimary = Color(0xFF449BD3)
@@ -47,4 +48,6 @@ val darkFifithChipColor = Color(0xFF80D37B)
 val darkLockColor = Color(0xFFC9B05A)
 val darkAppTitleColor = Color(0xFFB2D7E8)
 val darkSelectedNoteColor = Color(0xFF1B2631)
+val darkBottomBarColor = Color(0xFF24252E)
+val darkBottomBarFabColor = Color(0xFF7A819E)
 val darkStatusBarColor = Color(0xFF1C2227)

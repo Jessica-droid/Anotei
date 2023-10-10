@@ -11,7 +11,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.tooling.preview.Preview
+import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.NoteOptionsPresentationType
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
@@ -27,7 +27,7 @@ fun NoteOptions(
     optionType: NoteOptionsPresentationType,
 ) {
     BottomAppBar(
-        containerColor = AnoteiAppTheme.colors.colorScheme.background,
+        containerColor = AnoteiAppTheme.colors.bottomBarColor,
         actions = {
 
             IconButton(onClick = onCategoryClick) {
@@ -68,9 +68,9 @@ fun OptionMainAction(
     optionType: NoteOptionsPresentationType,
     onFABClick: () -> Unit,
     modifier: Modifier = Modifier,
-) =
+) {
     FloatingActionButton(
-        containerColor = AnoteiAppTheme.colors.colorScheme.primary,
+        containerColor = AnoteiAppTheme.colors.bottomBarFabColor,
         onClick = onFABClick,
         modifier = modifier
     ) {
@@ -81,25 +81,12 @@ fun OptionMainAction(
             modifier = Modifier.testTag(FAB_ICON_TEST_TAG)
         )
     }
-
-@Preview
-@Composable
-private fun NoteOptionPreviewLight() {
-    AnoteiTheme(darkTheme = false) {
-        NoteOptions(
-            onCategoryClick = {},
-            onSchedulerClick = {},
-            onLockClick = {},
-            onFABClick = {},
-            optionType = NoteOptionsPresentationType.PREVIEW_MODE
-        )
-    }
 }
 
-@Preview
+@ColorSchemePreviews
 @Composable
-private fun NoteOptionPreviewDark() {
-    AnoteiTheme(darkTheme = true) {
+private fun NoteOptionPreviewLight() {
+    AnoteiTheme {
         NoteOptions(
             onCategoryClick = {},
             onSchedulerClick = {},

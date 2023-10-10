@@ -37,6 +37,8 @@ fun darkThemeColors() = ThemeColors(
     appTitleColor = darkAppTitleColor,
     selectedNoteColor = darkSelectedNoteColor,
     statusBarColor = darkStatusBarColor,
+    bottomBarColor = darkBottomBarColor,
+    bottomBarFabColor = darkBottomBarFabColor,
     colorScheme = darkColorScheme
 )
 
@@ -57,5 +59,7 @@ fun lightThemeColors() = ThemeColors(
     appTitleColor = lightAppTitleColor,
     selectedNoteColor = lightSelectedNoteColor,
     statusBarColor = lightStatusBarColor,
+    bottomBarColor = lightBottomBarColor,
+    bottomBarFabColor = lightBottomBarFabColor,
     colorScheme = lightColorScheme
 )
