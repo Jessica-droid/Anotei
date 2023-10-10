@@ -2,6 +2,7 @@ package br.com.ascence.anotei.ui.screencomponents.shared
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Adjust
+import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.BottomAppBar
@@ -24,6 +25,7 @@ fun NoteOptions(
     onSchedulerClick: () -> Unit,
     onLockClick: () -> Unit,
     onFABClick: () -> Unit,
+    onRemoveClick: () -> Unit,
     optionType: NoteOptionsPresentationType,
 ) {
     BottomAppBar(
@@ -50,6 +52,14 @@ fun NoteOptions(
                 Icon(
                     imageVector = Icons.Default.Lock,
                     contentDescription = "Proteger anotação", // TODO replace this type of string
+                    tint = AnoteiAppTheme.colors.menuColor
+                )
+            }
+
+            IconButton(onClick = onRemoveClick) {
+                Icon(
+                    imageVector = Icons.Default.DeleteOutline,
+                    contentDescription = "Apagaranotação", // TODO replace this type of string
                     tint = AnoteiAppTheme.colors.menuColor
                 )
             }
@@ -92,6 +102,7 @@ private fun NoteOptionPreviewLight() {
             onSchedulerClick = {},
             onLockClick = {},
             onFABClick = {},
+            onRemoveClick = {},
             optionType = NoteOptionsPresentationType.PREVIEW_MODE
         )
     }
