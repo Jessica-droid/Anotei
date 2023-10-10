@@ -26,6 +26,7 @@ fun NoteScreen() {
                 onSchedulerClick = {}, // TODO setup scheduling update
                 onLockClick = {}, // TODO setup lock state update
                 onFABClick = {}, // TODO setup note save
+                onRemoveClick = {}, // TODO setup remove note
                 optionType = NoteOptionsPresentationType.EDIT_MODE
             )
         }

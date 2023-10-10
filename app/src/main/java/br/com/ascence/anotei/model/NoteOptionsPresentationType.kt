@@ -10,7 +10,7 @@ import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 
 enum class NoteOptionsPresentationType(
     val fabIcon: ImageVector,
-    val fabIconColor: @Composable () -> Color = { AnoteiAppTheme.colors.primaryButtonTextColor },
+    val fabIconColor: @Composable () -> Color = { AnoteiAppTheme.colors.secondaryBackgroundColor },
     val fabContentDescription: String,
 ) {
     EDIT_MODE(
