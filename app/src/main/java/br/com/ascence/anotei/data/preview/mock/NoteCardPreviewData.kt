@@ -1,4 +1,4 @@
-package br.com.ascence.anotei.data.mock.preview
+package br.com.ascence.anotei.data.preview.mock
 
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.NoteStatus

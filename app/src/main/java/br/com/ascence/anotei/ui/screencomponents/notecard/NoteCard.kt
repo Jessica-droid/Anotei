@@ -13,8 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import br.com.ascence.anotei.data.mock.preview.fakeNote
+import br.com.ascence.anotei.data.preview.ColorSchemePreviews
+import br.com.ascence.anotei.data.preview.mock.fakeNote
 import br.com.ascence.anotei.extension.toStatusPresentation
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.NoteStatusPresentation
@@ -95,10 +95,10 @@ private fun CardContent(
     }
 }
 
-@Preview
+@ColorSchemePreviews
 @Composable
-private fun NoteCardPreviewDark() {
-    AnoteiTheme(darkTheme = false) {
+private fun NoteCardPreview() {
+    AnoteiTheme {
         CardContent(
             note = fakeNote,
             noteColor = AnoteiAppTheme.colors.allChipColor,
@@ -107,23 +107,6 @@ private fun NoteCardPreviewDark() {
                 NoteStatusPresentation.SCHEDULED,
                 NoteStatusPresentation.PROTECTED
             ),
-            onCardClick = {}
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun NoteCardPreviewLight() {
-    AnoteiTheme(darkTheme = true) {
-        CardContent(
-            note = fakeNote,
-            noteColor = AnoteiAppTheme.colors.allChipColor,
-            statusPresentation = listOf(
-                NoteStatusPresentation.SCHEDULED,
-                NoteStatusPresentation.PROTECTED
-            ),
-            isCardSelected = false,
             onCardClick = {}
         )
     }

@@ -1,4 +1,4 @@
-package br.com.ascence.anotei.ui.screens.notes
+package br.com.ascence.anotei.ui.screencomponents.notes
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
@@ -27,22 +27,10 @@ fun NotesEmptyState(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
+@ColorSchemePreviews
 @Composable
-private fun EmptyStatePreviewLight() {
-    AnoteiTheme(darkTheme = false) {
-        NotesEmptyState(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = AnoteiAppTheme.colors.colorScheme.background)
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun EmptyStatePreviewDark() {
-    AnoteiTheme(darkTheme = true) {
+private fun EmptyStatePreview() {
+    AnoteiTheme {
         NotesEmptyState(
             modifier = Modifier
                 .fillMaxSize()
