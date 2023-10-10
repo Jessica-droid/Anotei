@@ -10,8 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
+import br.com.ascence.anotei.data.preview.mock.noteOptionsPreview
 import br.com.ascence.anotei.model.NoteOptionsPresentationType
-import br.com.ascence.anotei.ui.screencomponents.shared.NoteOptions
+import br.com.ascence.anotei.ui.screencomponents.shared.NoteOptionsBar
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
@@ -21,12 +22,9 @@ fun NoteScreen() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            NoteOptions(
-                onCategoryClick = {}, // TODO setup category update
-                onSchedulerClick = {}, // TODO setup scheduling update
-                onLockClick = {}, // TODO setup lock state update
+            NoteOptionsBar(
+                options = noteOptionsPreview,
                 onFABClick = {}, // TODO setup note save
-                onRemoveClick = {}, // TODO setup remove note
                 optionType = NoteOptionsPresentationType.EDIT_MODE
             )
         }
