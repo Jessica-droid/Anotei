@@ -54,6 +54,7 @@ fun Dashboard() {
                 onCategoryClick = {}, // TODO setup category update
                 onSchedulerClick = {}, // TODO setup scheduling update
                 onLockClick = {}, // TODO setup lock state update
+                onRemoveClick = {}, // TODO setup remove note
                 onFABClick = {}, // TODO setup note edit
             )
         }
@@ -105,7 +106,7 @@ private fun CreateNoteFAB(
             Icon(
                 imageVector = Icons.Default.Add,
                 contentDescription = "Criar anotação", // TODO replace this type of string
-                tint = AnoteiAppTheme.colors.primaryButtonTextColor
+                tint = AnoteiAppTheme.colors.secondaryBackgroundColor
             )
         }
     }
@@ -118,6 +119,7 @@ private fun NoteOptionsBar(
     onSchedulerClick: () -> Unit,
     onLockClick: () -> Unit,
     onFABClick: () -> Unit,
+    onRemoveClick: () -> Unit,
 ) {
     AnimatedVisibility(
         visible = showBottomBar,
@@ -135,6 +137,7 @@ private fun NoteOptionsBar(
             onSchedulerClick = onSchedulerClick,
             onLockClick = onLockClick,
             onFABClick = onFABClick,
+            onRemoveClick = onRemoveClick,
             optionType = NoteOptionsPresentationType.PREVIEW_MODE
         )
     }
