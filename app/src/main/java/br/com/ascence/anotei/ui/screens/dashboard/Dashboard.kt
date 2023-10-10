@@ -26,9 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
+import br.com.ascence.anotei.data.preview.mock.noteOptionsPreview
+import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.model.NoteOptionsPresentationType
 import br.com.ascence.anotei.ui.screencomponents.notes.NotesListScreen
-import br.com.ascence.anotei.ui.screencomponents.shared.NoteOptions
+import br.com.ascence.anotei.ui.screencomponents.shared.NoteOptionsBar
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
@@ -49,12 +51,9 @@ fun Dashboard() {
         },
         floatingActionButtonPosition = FabPosition.Center,
         bottomBar = {
-            NoteOptionsBar(
+            NoteBar(
                 showBottomBar = showNoteOptions.value,
-                onCategoryClick = {}, // TODO setup category update
-                onSchedulerClick = {}, // TODO setup scheduling update
-                onLockClick = {}, // TODO setup lock state update
-                onRemoveClick = {}, // TODO setup remove note
+                options = noteOptionsPreview,
                 onFABClick = {}, // TODO setup note edit
             )
         }
@@ -113,13 +112,10 @@ private fun CreateNoteFAB(
 }
 
 @Composable
-private fun NoteOptionsBar(
+private fun NoteBar(
     showBottomBar: Boolean,
-    onCategoryClick: () -> Unit,
-    onSchedulerClick: () -> Unit,
-    onLockClick: () -> Unit,
+    options: List<NoteOption>,
     onFABClick: () -> Unit,
-    onRemoveClick: () -> Unit,
 ) {
     AnimatedVisibility(
         visible = showBottomBar,
@@ -132,12 +128,9 @@ private fun NoteOptionsBar(
             shrinkTowards = Alignment.Bottom
         )
     ) {
-        NoteOptions(
-            onCategoryClick = onCategoryClick,
-            onSchedulerClick = onSchedulerClick,
-            onLockClick = onLockClick,
+        NoteOptionsBar(
             onFABClick = onFABClick,
-            onRemoveClick = onRemoveClick,
+            options = options,
             optionType = NoteOptionsPresentationType.PREVIEW_MODE
         )
     }
