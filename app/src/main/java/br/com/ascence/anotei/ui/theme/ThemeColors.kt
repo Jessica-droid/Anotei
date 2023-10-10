@@ -24,7 +24,9 @@ class ThemeColors(
     appTitleColor: Color,
     selectedNoteColor: Color,
     statusBarColor: Color,
-    colorScheme: ColorScheme
+    bottomBarColor: Color,
+    bottomBarFabColor: Color,
+    colorScheme: ColorScheme,
 ) {
     var primaryTextColor by mutableStateOf(primaryTextColor)
         private set
@@ -77,6 +79,12 @@ class ThemeColors(
     var statusBarColor by mutableStateOf(statusBarColor)
         private set
 
+    var bottomBarColor by mutableStateOf(bottomBarColor)
+        private set
+
+    var bottomBarFabColor by mutableStateOf(bottomBarFabColor)
+        private set
+
     var colorScheme by mutableStateOf(colorScheme)
         private set
 
@@ -97,7 +105,9 @@ class ThemeColors(
         appTitleColor: Color = this.appTitleColor,
         selectedNoteColor: Color = this.selectedNoteColor,
         statusBarColor: Color = this.statusBarColor,
-        colorScheme: ColorScheme = this.colorScheme
+        bottomBarColor: Color = this.bottomBarColor,
+        bottomBarFabColor: Color = this.bottomBarFabColor,
+        colorScheme: ColorScheme = this.colorScheme,
     ) = ThemeColors(
         primaryTextColor = primaryTextColor,
         secondaryTextColor = secondaryTextColor,
@@ -115,6 +125,8 @@ class ThemeColors(
         appTitleColor = appTitleColor,
         selectedNoteColor = selectedNoteColor,
         statusBarColor = statusBarColor,
+        bottomBarColor = bottomBarColor,
+        bottomBarFabColor = bottomBarFabColor,
         colorScheme = colorScheme
     )
 
@@ -135,6 +147,8 @@ class ThemeColors(
         appTitleColor = other.primaryTextColor,
         selectedNoteColor = other.primaryTextColor,
         statusBarColor = other.primaryTextColor,
+        bottomBarColor = other.bottomBarColor,
+        bottomBarFabColor = other.bottomBarFabColor,
         colorScheme = other.colorScheme
     )
 }
