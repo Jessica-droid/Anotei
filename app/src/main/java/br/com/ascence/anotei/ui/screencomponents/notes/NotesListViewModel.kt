@@ -1,4 +1,4 @@
-package br.com.ascence.anotei.ui.screens.notes
+package br.com.ascence.anotei.ui.screencomponents.notes
 
 import androidx.lifecycle.ViewModel
 import br.com.ascence.anotei.data.mock.notesListMock

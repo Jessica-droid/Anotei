@@ -18,7 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
+import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.NoteStatusPresentation
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
@@ -31,7 +31,7 @@ fun NoteCardHeader(
     creationDate: String,
     categoryColor: Color,
     status: List<NoteStatusPresentation>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -91,26 +91,10 @@ private fun NoteStatus(noteStatus: List<NoteStatusPresentation>) {
     }
 }
 
-@Preview(showBackground = true)
+@ColorSchemePreviews
 @Composable
 private fun NoteCardHeaderPreviewLight() {
-    AnoteiTheme(darkTheme = false) {
-        NoteCardHeader(
-            title = "Título",
-            creationDate = "25 de Setembro",
-            categoryColor = AnoteiAppTheme.colors.allChipColor,
-            status = listOf(NoteStatusPresentation.SCHEDULED, NoteStatusPresentation.PROTECTED),
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(AnoteiAppTheme.colors.colorScheme.background)
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun NoteCardHeaderPreviewDark() {
-    AnoteiTheme(darkTheme = true) {
+    AnoteiTheme {
         NoteCardHeader(
             title = "Título",
             creationDate = "25 de Setembro",

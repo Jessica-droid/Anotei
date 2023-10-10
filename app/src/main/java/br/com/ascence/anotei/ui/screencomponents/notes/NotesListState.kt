@@ -1,4 +1,4 @@
-package br.com.ascence.anotei.ui.screens.notes
+package br.com.ascence.anotei.ui.screencomponents.notes
 
 import br.com.ascence.anotei.model.Note
 
