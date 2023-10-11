@@ -1,4 +1,4 @@
-package br.com.ascence.anotei.ui.screencomponents.shared
+package br.com.ascence.anotei.ui.screencomponents.shared.noteoptions
 
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.FloatingActionButton
@@ -10,7 +10,7 @@ import androidx.compose.ui.platform.testTag
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.data.preview.mock.noteOptionsPreview
 import br.com.ascence.anotei.model.NoteOption
-import br.com.ascence.anotei.model.NoteOptionsPresentationType
+import br.com.ascence.anotei.ui.presentation.NoteOptionsPresentationType
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 

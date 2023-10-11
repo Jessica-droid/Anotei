@@ -1,4 +1,4 @@
-package br.com.ascence.anotei.model
+package br.com.ascence.anotei.ui.presentation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlarmOn

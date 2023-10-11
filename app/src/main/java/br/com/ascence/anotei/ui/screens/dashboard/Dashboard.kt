@@ -28,23 +28,22 @@ import androidx.compose.ui.text.font.FontWeight
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.data.preview.mock.noteOptionsPreview
 import br.com.ascence.anotei.model.NoteOption
-import br.com.ascence.anotei.model.NoteOptionsPresentationType
+import br.com.ascence.anotei.ui.presentation.NoteOptionsPresentationType
 import br.com.ascence.anotei.ui.screencomponents.notes.NotesListScreen
-import br.com.ascence.anotei.ui.screencomponents.shared.NoteOptionsBar
+import br.com.ascence.anotei.ui.screencomponents.shared.noteoptions.NoteOptionsBar
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Dashboard() {
-
+fun Dashboard(viewModel: DashboardViewModel = DashboardViewModel()) {
     val showNoteOptions = remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { AppBar() },
         floatingActionButton = {
-            CreateNoteFAB(
+            CreateNoteButton(
                 showButton = showNoteOptions.value.not(),
                 onFabClick = {} // TODO setup note creation
             )
@@ -89,7 +88,7 @@ private fun AppBar() {
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-private fun CreateNoteFAB(
+private fun CreateNoteButton(
     showButton: Boolean,
     onFabClick: () -> Unit,
 ) {
