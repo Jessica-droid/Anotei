@@ -43,4 +43,26 @@ sealed class NoteOption {
         override val contentDescription: String = "Apagar nota",
         override val action: () -> Unit,
     ) : NoteOption()
+
+    companion object {
+        fun getAllOptions(
+            onCategoryClick: () -> Unit,
+            onScheduleClick: () -> Unit,
+            onProtectClick: () -> Unit,
+            onDeleteClick: () -> Unit,
+        ): List<NoteOption> = listOf(
+            Category(
+                action = onCategoryClick
+            ),
+            Schedule(
+                action = onScheduleClick
+            ),
+            Protect(
+                action = onProtectClick
+            ),
+            Delete(
+                action = onDeleteClick
+            ),
+        )
+    }
 }
