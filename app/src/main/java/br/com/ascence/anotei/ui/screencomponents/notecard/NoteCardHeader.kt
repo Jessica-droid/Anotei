@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
-import br.com.ascence.anotei.model.NoteStatusPresentation
+import br.com.ascence.anotei.ui.presentation.NoteStatusPresentation
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
