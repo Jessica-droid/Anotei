@@ -11,8 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.data.preview.mock.noteOptionsPreview
-import br.com.ascence.anotei.model.NoteOptionsPresentationType
-import br.com.ascence.anotei.ui.screencomponents.shared.NoteOptionsBar
+import br.com.ascence.anotei.ui.presentation.NoteOptionsPresentationType
+import br.com.ascence.anotei.ui.screencomponents.shared.noteoptions.NoteOptionsBar
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
