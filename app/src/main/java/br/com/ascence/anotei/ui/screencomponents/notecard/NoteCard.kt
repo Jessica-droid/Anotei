@@ -11,10 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.data.preview.mock.fakeNote
+import br.com.ascence.anotei.extension.getCategoryColor
 import br.com.ascence.anotei.extension.toStatusPresentation
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.ui.presentation.NoteStatusPresentation
@@ -27,16 +27,14 @@ private const val UNSELECTED_CARD_CONTENT_MAX_LINES = 3
 fun NoteCard(
     note: Note,
     isCardSelected: Boolean,
-    onCardClick: (String) -> Unit,
+    onCardClick: (Note) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
     val statusPresentation = remember { note.toStatusPresentation() }
-    val noteColor = AnoteiAppTheme.colors.allChipColor
 
     CardContent(
         note = note,
-        noteColor = noteColor,
         isCardSelected = isCardSelected,
         statusPresentation = statusPresentation,
         onCardClick = onCardClick,
@@ -47,10 +45,9 @@ fun NoteCard(
 @Composable
 private fun CardContent(
     note: Note,
-    noteColor: Color,
     isCardSelected: Boolean,
     statusPresentation: List<NoteStatusPresentation>,
-    onCardClick: (String) -> Unit,
+    onCardClick: (Note) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val contentMaxLines =
@@ -67,7 +64,7 @@ private fun CardContent(
             .selectable(
                 selected = isCardSelected,
                 onClick = {
-                    onCardClick(note.id)
+                    onCardClick(note)
                 }
             )
     ) {
@@ -79,7 +76,7 @@ private fun CardContent(
             NoteCardHeader(
                 title = note.title,
                 creationDate = note.creationDate,
-                categoryColor = noteColor,
+                categoryColor = note.getCategoryColor(),
                 status = statusPresentation
             )
 
@@ -101,7 +98,6 @@ private fun NoteCardPreview() {
     AnoteiTheme {
         CardContent(
             note = fakeNote,
-            noteColor = AnoteiAppTheme.colors.allChipColor,
             isCardSelected = false,
             statusPresentation = listOf(
                 NoteStatusPresentation.SCHEDULED,

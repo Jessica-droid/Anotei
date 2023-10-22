@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import br.com.ascence.anotei.extension.getCategoryColor
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 
 sealed class NoteOption {
@@ -45,14 +46,17 @@ sealed class NoteOption {
     ) : NoteOption()
 
     companion object {
+
         fun getAllOptions(
+            note: Note,
             onCategoryClick: () -> Unit,
             onScheduleClick: () -> Unit,
             onProtectClick: () -> Unit,
             onDeleteClick: () -> Unit,
         ): List<NoteOption> = listOf(
             Category(
-                action = onCategoryClick
+                action = onCategoryClick,
+                iconColor = { note.getCategoryColor() }
             ),
             Schedule(
                 action = onScheduleClick
