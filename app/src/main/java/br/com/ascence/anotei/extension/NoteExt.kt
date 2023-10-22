@@ -31,11 +31,11 @@ fun Note.getCategoryColor(): Color =
 @Composable
 fun Note.getProtectionIconColor(): Color =
     with(AnoteiAppTheme.colors) {
-        if (isProtected) colorScheme.tertiary else menuColor
+        if (isProtected) lockColor else menuColor
     }
 
 @Composable
 fun Note.getSchedulerIconColor(): Color =
     with(AnoteiAppTheme.colors) {
-        if (isScheduled) colorScheme.tertiary  else menuColor
+        if (isScheduled) lockColor  else menuColor
     }
