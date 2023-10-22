@@ -27,3 +27,15 @@ fun Note.getCategoryColor(): Color =
             Category.GREEN -> fifithChipColor
         }
     }
+
+@Composable
+fun Note.getProtectionIconColor(): Color =
+    with(AnoteiAppTheme.colors) {
+        if (isProtected) colorScheme.tertiary else menuColor
+    }
+
+@Composable
+fun Note.getSchedulerIconColor(): Color =
+    with(AnoteiAppTheme.colors) {
+        if (isScheduled) colorScheme.tertiary  else menuColor
+    }
