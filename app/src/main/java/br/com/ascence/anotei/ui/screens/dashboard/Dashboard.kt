@@ -20,13 +20,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
-import br.com.ascence.anotei.data.preview.mock.noteOptionsPreview
 import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.ui.presentation.NoteOptionsPresentationType
 import br.com.ascence.anotei.ui.screencomponents.notes.NotesListScreen
@@ -38,6 +39,7 @@ import br.com.ascence.anotei.ui.theme.AnoteiTheme
 @Composable
 fun Dashboard(viewModel: DashboardViewModel = DashboardViewModel()) {
     val showNoteOptions = remember { mutableStateOf(false) }
+    val state by viewModel.uiState.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -52,13 +54,14 @@ fun Dashboard(viewModel: DashboardViewModel = DashboardViewModel()) {
         bottomBar = {
             NoteBar(
                 showBottomBar = showNoteOptions.value,
-                options = noteOptionsPreview,
+                options = state.noteOptions,
                 onFABClick = {}, // TODO setup note edit
             )
         }
     ) { innerPadding ->
         NotesListScreen(
-            onNoteClick = { haveSelectedNote ->
+            onNoteClick = { note, haveSelectedNote ->
+                viewModel.setupNoteOptions(note)
                 showNoteOptions.value = haveSelectedNote
             },
             onBackPressed = { haveSelectedNote ->

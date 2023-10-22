@@ -5,5 +5,6 @@ data class Note(
     val title: String,
     val description: String,
     val creationDate: String,
+    val category: Category,
     val status: List<NoteStatus>,
 )
