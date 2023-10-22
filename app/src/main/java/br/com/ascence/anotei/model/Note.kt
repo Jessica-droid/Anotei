@@ -7,4 +7,7 @@ data class Note(
     val creationDate: String,
     val category: Category,
     val status: List<NoteStatus>,
-)
+){
+    val isProtected: Boolean = status.contains(NoteStatus.PROTECTED)
+    val isScheduled: Boolean = status.contains(NoteStatus.SCHEDULED)
+}
