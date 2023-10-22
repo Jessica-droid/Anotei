@@ -22,7 +22,7 @@ import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
 @Composable
 fun NotesListScreen(
-    onNoteClick: (Boolean) -> Unit,
+    onNoteClick: (Note, Boolean) -> Unit,
     onBackPressed: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: NotesListViewModel = NotesListViewModel(),
@@ -43,10 +43,10 @@ fun NotesListScreen(
     Notes(
         notes = notesListState.notes,
         selectedId = selectedNote.value,
-        onNoteClick = { noteId ->
-            selectedNote.value = noteId
+        onNoteClick = { note ->
+            selectedNote.value = note.id
             haveSelectedNote.value = selectedNote.value.isNotEmpty()
-            onNoteClick(haveSelectedNote.value)
+            onNoteClick(note, haveSelectedNote.value)
         },
         modifier = modifier,
     )
@@ -56,7 +56,7 @@ fun NotesListScreen(
 private fun Notes(
     notes: List<Note>,
     selectedId: String,
-    onNoteClick: (String) -> Unit,
+    onNoteClick: (Note) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
