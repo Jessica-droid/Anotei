@@ -1,7 +1,6 @@
 package br.com.ascence.anotei.ui.screens.dashboard
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.scaleIn
@@ -27,46 +26,75 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
+import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.NoteOption
+import br.com.ascence.anotei.navigation.NOTE_PATH
 import br.com.ascence.anotei.ui.presentation.NoteOptionsPresentationType
 import br.com.ascence.anotei.ui.screencomponents.notes.NotesListScreen
 import br.com.ascence.anotei.ui.screencomponents.shared.noteoptions.NoteOptionsBar
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
+
+@Composable
+fun Dashboard(
+    navController: NavController,
+) {
+    val viewModel = remember {
+        DashboardViewModel()
+    }
+
+    val state by viewModel.uiState.collectAsState()
+    val showNoteOptions = remember { mutableStateOf(false) }
+
+    DashBoardContent(
+        showNoteOptions = showNoteOptions.value,
+        options = state.noteOptions,
+        onNoteClick = { note, haveSelectedNote ->
+            viewModel.setupNoteOptions(note)
+            showNoteOptions.value = haveSelectedNote
+        },
+        onBackPressed = { haveSelectedNote ->
+            showNoteOptions.value = haveSelectedNote
+        },
+        onNewNoteClick = {
+            navController.navigate(NOTE_PATH)
+        }
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Dashboard(viewModel: DashboardViewModel = DashboardViewModel()) {
-    val showNoteOptions = remember { mutableStateOf(false) }
-    val state by viewModel.uiState.collectAsState()
-
+private fun DashBoardContent(
+    showNoteOptions: Boolean,
+    options: List<NoteOption>,
+    onNoteClick: (Note, Boolean) -> Unit,
+    onBackPressed: (Boolean) -> Unit,
+    onNewNoteClick: () -> Unit,
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = { AppBar() },
         floatingActionButton = {
             CreateNoteButton(
-                showButton = showNoteOptions.value.not(),
-                onFabClick = {} // TODO setup note creation
+                showButton = showNoteOptions.not(),
+                onFabClick = onNewNoteClick
             )
         },
         floatingActionButtonPosition = FabPosition.Center,
         bottomBar = {
             NoteBar(
-                showBottomBar = showNoteOptions.value,
-                options = state.noteOptions,
-                onFABClick = {}, // TODO setup note edit
+                showBottomBar = showNoteOptions,
+                options = options,
+                onFABClick = {} // TODO setup note Edit,
             )
         }
     ) { innerPadding ->
         NotesListScreen(
-            onNoteClick = { note, haveSelectedNote ->
-                viewModel.setupNoteOptions(note)
-                showNoteOptions.value = haveSelectedNote
-            },
-            onBackPressed = { haveSelectedNote ->
-                showNoteOptions.value = haveSelectedNote
-            },
+            onNoteClick = onNoteClick,
+            onBackPressed = onBackPressed,
             modifier = Modifier.padding(innerPadding)
         )
     }
@@ -89,7 +117,6 @@ private fun AppBar() {
     )
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CreateNoteButton(
     showButton: Boolean,
@@ -142,6 +169,12 @@ private fun NoteBar(
 @Composable
 fun DashboardPreview() {
     AnoteiTheme {
-        Dashboard()
+        DashBoardContent(
+            showNoteOptions = false,
+            options = emptyList(),
+            onNoteClick = { _, _ -> },
+            onNewNoteClick = {},
+            onBackPressed = {}
+        )
     }
 }
