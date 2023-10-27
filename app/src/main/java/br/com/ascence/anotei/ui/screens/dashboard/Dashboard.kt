@@ -37,7 +37,6 @@ import br.com.ascence.anotei.ui.screencomponents.shared.noteoptions.NoteOptionsB
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
-
 @Composable
 fun Dashboard(
     navController: NavController,
