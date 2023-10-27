@@ -9,8 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import br.com.ascence.anotei.extension.getCategoryColor
-import br.com.ascence.anotei.extension.getProtectionIconColor
-import br.com.ascence.anotei.extension.getSchedulerIconColor
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 
 sealed class NoteOption {
@@ -68,17 +66,15 @@ sealed class NoteOption {
         ): List<NoteOption> = listOf(
             Category(
                 action = onCategoryClick,
-                iconColor = { note.getCategoryColor() },
+                iconColor = { note.getCategoryColor() }
             ),
             Schedule(
                 action = onScheduleClick,
-                showBadge = note.isScheduled,
-                iconColor = { note.getSchedulerIconColor() }
+                showBadge = note.isScheduled
             ),
             Protect(
                 action = onProtectClick,
-                showBadge = note.isProtected,
-                iconColor = { note.getProtectionIconColor() }
+                showBadge = note.isProtected
             ),
             Delete(
                 action = onDeleteClick
