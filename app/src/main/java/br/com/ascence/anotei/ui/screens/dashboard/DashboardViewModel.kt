@@ -1,8 +1,8 @@
 package br.com.ascence.anotei.ui.screens.dashboard
 
 import androidx.lifecycle.ViewModel
+import br.com.ascence.anotei.extension.getOptions
 import br.com.ascence.anotei.model.Note
-import br.com.ascence.anotei.model.NoteOption
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,8 +19,7 @@ class DashboardViewModel : ViewModel() {
 
     fun setupNoteOptions(note: Note) {
 
-        val options = NoteOption.getAllOptions(
-            note = note,
+        val options = note.getOptions(
             onCategoryClick = {}, // TODO setup category selection
             onScheduleClick = {}, // TODO setup scheduling
             onProtectClick = {}, // TODO setup note protection
