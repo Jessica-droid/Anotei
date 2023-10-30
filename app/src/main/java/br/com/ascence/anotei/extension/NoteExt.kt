@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import br.com.ascence.anotei.model.Category
 import br.com.ascence.anotei.model.Note
+import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.model.NoteStatus
 import br.com.ascence.anotei.ui.presentation.NoteStatusPresentation
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
@@ -16,6 +17,29 @@ fun Note.toStatusPresentation(): List<NoteStatusPresentation> =
         }
     }
 
+fun Note.getOptions(
+    onCategoryClick: () -> Unit,
+    onScheduleClick: () -> Unit,
+    onProtectClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+): List<NoteOption> = listOf(
+    NoteOption.Category(
+        action = onCategoryClick,
+        iconColor = { getCategoryColor() }
+    ),
+    NoteOption.Schedule(
+        action = onScheduleClick,
+        showBadge = isScheduled
+    ),
+    NoteOption.Protect(
+        action = onProtectClick,
+        showBadge = isProtected
+    ),
+    NoteOption.Delete(
+        action = onDeleteClick
+    ),
+)
+
 @Composable
 fun Note.getCategoryColor(): Color =
     with(AnoteiAppTheme.colors) {
@@ -26,16 +50,4 @@ fun Note.getCategoryColor(): Color =
             Category.RED -> fourthColor
             Category.GREEN -> fifithChipColor
         }
-    }
-
-@Composable
-fun Note.getProtectionIconColor(): Color =
-    with(AnoteiAppTheme.colors) {
-        if (isProtected) lockColor else menuColor
-    }
-
-@Composable
-fun Note.getSchedulerIconColor(): Color =
-    with(AnoteiAppTheme.colors) {
-        if (isScheduled) lockColor  else menuColor
     }
