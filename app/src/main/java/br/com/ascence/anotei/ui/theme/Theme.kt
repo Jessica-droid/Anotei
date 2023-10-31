@@ -1,6 +1,7 @@
 package br.com.ascence.anotei.ui.theme
 
 import android.app.Activity
+import android.graphics.drawable.BitmapDrawable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Typography
@@ -18,7 +19,7 @@ fun AnoteiTheme(
     lightColors: ThemeColors = AnoteiAppTheme.colors,
     darkColors: ThemeColors = darkThemeColors(),
     darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val currentColor = remember { if (darkTheme) darkColors else lightColors }
     val rememberedColors = remember { currentColor.copy() }.apply { updateColorsFrom(lightColors) }
@@ -28,6 +29,7 @@ fun AnoteiTheme(
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = currentColor.statusBarColor.toArgb()
+            window.setBackgroundDrawable(BitmapDrawable())
         }
     }
 
