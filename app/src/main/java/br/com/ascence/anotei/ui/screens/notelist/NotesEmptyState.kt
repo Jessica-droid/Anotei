@@ -1,4 +1,4 @@
-package br.com.ascence.anotei.ui.screencomponents.notes
+package br.com.ascence.anotei.ui.screens.notelist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
