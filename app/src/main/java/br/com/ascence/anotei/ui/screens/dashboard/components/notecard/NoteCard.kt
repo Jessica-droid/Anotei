@@ -1,4 +1,4 @@
-package br.com.ascence.anotei.ui.screencomponents.notecard
+package br.com.ascence.anotei.ui.screens.dashboard.components.notecard
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column

@@ -5,8 +5,8 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import br.com.ascence.anotei.ui.presentation.NoteOptionsPresentationType
-import br.com.ascence.anotei.ui.screencomponents.shared.noteoptions.FAB_ICON_TEST_TAG
-import br.com.ascence.anotei.ui.screencomponents.shared.noteoptions.OptionMainAction
+import br.com.ascence.anotei.ui.common.components.noteoptions.FAB_ICON_TEST_TAG
+import br.com.ascence.anotei.ui.common.components.noteoptions.OptionMainAction
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 import org.junit.Rule
 import org.junit.Test

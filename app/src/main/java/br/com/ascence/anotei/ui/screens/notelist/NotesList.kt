@@ -1,4 +1,4 @@
-package br.com.ascence.anotei.ui.screencomponents.notes
+package br.com.ascence.anotei.ui.screens.notelist
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import br.com.ascence.anotei.data.mock.notesListMock
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.Note
-import br.com.ascence.anotei.ui.screencomponents.notecard.NoteCard
+import br.com.ascence.anotei.ui.screens.dashboard.components.notecard.NoteCard
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
