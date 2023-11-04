@@ -1,4 +1,4 @@
-package br.com.ascence.anotei.ui.screens.dashboard.components.notecard
+package br.com.ascence.anotei.ui.screens.notelist.components.notecard
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
-import br.com.ascence.anotei.data.preview.mock.fakeNote
+import br.com.ascence.anotei.data.preview.mock.fakeTextNote
 import br.com.ascence.anotei.model.extension.getCategoryColor
 import br.com.ascence.anotei.model.extension.toStatusPresentation
 import br.com.ascence.anotei.model.Note
@@ -80,14 +80,16 @@ private fun CardContent(
                 status = statusPresentation
             )
 
-            Text(
-                text = note.description,
-                color = AnoteiAppTheme.colors.secondaryTextColor,
-                fontSize = AnoteiAppTheme.fontSizes.medium,
-                maxLines = contentMaxLines,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(top = AnoteiAppTheme.spaces.xSmall)
-            )
+            if (note is Note.TextNote) {
+                Text(
+                    text = note.description,
+                    color = AnoteiAppTheme.colors.secondaryTextColor,
+                    fontSize = AnoteiAppTheme.fontSizes.medium,
+                    maxLines = contentMaxLines,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = AnoteiAppTheme.spaces.xSmall)
+                )
+            }
         }
     }
 }
@@ -97,7 +99,7 @@ private fun CardContent(
 private fun NoteCardPreview() {
     AnoteiTheme {
         CardContent(
-            note = fakeNote,
+            note = fakeTextNote,
             isCardSelected = false,
             statusPresentation = listOf(
                 NoteStatusPresentation.SCHEDULED,
