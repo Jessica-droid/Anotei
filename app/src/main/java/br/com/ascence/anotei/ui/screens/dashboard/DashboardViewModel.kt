@@ -1,8 +1,8 @@
 package br.com.ascence.anotei.ui.screens.dashboard
 
 import androidx.lifecycle.ViewModel
-import br.com.ascence.anotei.extension.getOptions
 import br.com.ascence.anotei.model.Note
+import br.com.ascence.anotei.model.extension.getOptions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

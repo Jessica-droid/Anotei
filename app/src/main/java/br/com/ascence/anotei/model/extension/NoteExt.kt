@@ -1,4 +1,4 @@
-package br.com.ascence.anotei.extension
+package br.com.ascence.anotei.model.extension
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
