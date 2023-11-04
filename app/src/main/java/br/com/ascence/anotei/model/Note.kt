@@ -1,13 +1,22 @@
 package br.com.ascence.anotei.model
 
-data class Note(
-    val id: String,
-    val title: String,
-    val description: String,
-    val creationDate: String,
-    val category: Category,
-    val status: List<NoteStatus>,
-){
-    val isProtected: Boolean = status.contains(NoteStatus.PROTECTED)
-    val isScheduled: Boolean = status.contains(NoteStatus.SCHEDULED)
+sealed class Note {
+    abstract val id: String
+    abstract val title: String
+    abstract val status: List<NoteStatus>
+    abstract val category: Category
+    abstract val creationDate: String
+
+    fun isProtected(): Boolean = status.contains(NoteStatus.PROTECTED)
+    fun isScheduled(): Boolean = status.contains(NoteStatus.SCHEDULED)
+
+    data class TextNote(
+        override val id: String,
+        override val title: String,
+        override val status: List<NoteStatus>,
+        override val category: Category,
+        override val creationDate: String,
+        val description: String,
+    ) : Note()
+
 }

@@ -29,11 +29,11 @@ fun Note.getOptions(
     ),
     NoteOption.Schedule(
         action = onScheduleClick,
-        showBadge = isScheduled
+        showBadge = isScheduled()
     ),
     NoteOption.Protect(
         action = onProtectClick,
-        showBadge = isProtected
+        showBadge = isProtected()
     ),
     NoteOption.Delete(
         action = onDeleteClick
