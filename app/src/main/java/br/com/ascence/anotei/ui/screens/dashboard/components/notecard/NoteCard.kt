@@ -14,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.data.preview.mock.fakeNote
-import br.com.ascence.anotei.extension.getCategoryColor
-import br.com.ascence.anotei.extension.toStatusPresentation
+import br.com.ascence.anotei.model.extension.getCategoryColor
+import br.com.ascence.anotei.model.extension.toStatusPresentation
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.ui.presentation.NoteStatusPresentation
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
