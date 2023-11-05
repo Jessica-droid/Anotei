@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.navigation.NavController
@@ -46,7 +47,10 @@ fun NoteScreenContent(
 ) {
 
     val focusRequester = remember { FocusRequester() }
-    val content: MutableState<String> = remember { mutableStateOf("") }
+    val noteTitleMaxLength: Int = remember { 40 }
+    val noteTitle: MutableState<String> = remember { mutableStateOf("Sem título") }
+    val noteContent: MutableState<String> = remember { mutableStateOf("") }
+    val noteCategoryColor: Color = AnoteiAppTheme.colors.allChipColor
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -74,16 +78,23 @@ fun NoteScreenContent(
                 .background(AnoteiAppTheme.colors.colorScheme.background)
         ) {
             NoteHeader(
+                noteCategoryColor = noteCategoryColor,
+                titleInitialValue = noteTitle.value,
+                onTitleChanged = { newTitle ->
+                    if (newTitle.length <= noteTitleMaxLength) {
+                        noteTitle.value = newTitle
+                    }
+                },
                 modifier = Modifier.padding(horizontal = AnoteiAppTheme.spaces.medium)
             )
             BasicTextField(
-                value = content.value,
+                value = noteContent.value,
                 textStyle = TextStyle(
                     color = AnoteiAppTheme.colors.secondaryTextColor,
                     fontSize = AnoteiAppTheme.fontSizes.medium,
                 ),
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-                onValueChange = { newContent -> content.value = newContent },
+                onValueChange = { newContent -> noteContent.value = newContent },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(AnoteiAppTheme.spaces.medium)

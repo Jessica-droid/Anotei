@@ -12,11 +12,9 @@ import androidx.compose.material.icons.filled.Brightness1
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
@@ -25,10 +23,11 @@ import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
 @Composable
 fun NoteHeader(
+    noteCategoryColor: Color,
+    titleInitialValue: String,
+    onTitleChanged:(String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
-    val title: MutableState<String> = remember { mutableStateOf("Sem título") }
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -38,7 +37,7 @@ fun NoteHeader(
     ) {
         Icon(
             imageVector = Icons.Default.Brightness1,
-            tint = AnoteiAppTheme.colors.allChipColor,
+            tint = noteCategoryColor,
             contentDescription = "Cor da categoria",
             modifier = Modifier
                 .padding(end = AnoteiAppTheme.spaces.medium)
@@ -46,14 +45,15 @@ fun NoteHeader(
         )
         Column {
             BasicTextField(
-                value = title.value,
-                singleLine = true,
+                value = titleInitialValue,
                 textStyle = TextStyle(
                     color = AnoteiAppTheme.colors.primaryTextColor,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = AnoteiAppTheme.fontSizes.xLarge,
                 ),
-                onValueChange = { newTitle -> title.value = newTitle },
+                maxLines = 2,
+                onValueChange = onTitleChanged,
+                modifier = Modifier.fillMaxWidth()
             )
             Text(
                 text = "30 de Outubro",
@@ -68,6 +68,10 @@ fun NoteHeader(
 @Composable
 private fun NoteScreenPreviewLight() {
     AnoteiTheme {
-        NoteHeader()
+        NoteHeader(
+            noteCategoryColor = AnoteiAppTheme.colors.allChipColor,
+            titleInitialValue = "Sem título",
+            onTitleChanged = {}
+        )
     }
 }
