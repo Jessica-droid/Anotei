@@ -75,12 +75,12 @@ private fun CardContent(
         ) {
             NoteCardHeader(
                 title = note.title,
-                creationDate = note.creationDate,
+                creationDate = note.creationDate.toString(),
                 categoryColor = note.getCategoryColor(),
                 status = statusPresentation
             )
 
-            if (note is Note.TextNote) {
+            if (note is Note.SimpleText) {
                 Text(
                     text = note.description,
                     color = AnoteiAppTheme.colors.secondaryTextColor,

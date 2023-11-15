@@ -14,7 +14,7 @@ import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 
 @Composable
-fun Option(option: NoteOption) {
+fun NoteOption(option: NoteOption) {
     Box(
         contentAlignment = Alignment.Center
     ) {
