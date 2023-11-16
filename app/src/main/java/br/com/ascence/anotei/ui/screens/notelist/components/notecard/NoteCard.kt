@@ -75,7 +75,7 @@ private fun CardContent(
         ) {
             NoteCardHeader(
                 title = note.title,
-                creationDate = note.creationDate,
+                creationDate = note.creationDate.toString(), // TODO format date
                 categoryColor = note.getCategoryColor(),
                 status = statusPresentation
             )
