@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -20,42 +21,52 @@ import br.com.ascence.anotei.ui.screens.notelist.components.notecard.NoteCard
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
+private const val OUT_OF_RANGE_ID = -1
+
 @Composable
 fun NotesListScreen(
     onNoteClick: (Note, Boolean) -> Unit,
     onBackPressed: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: NotesListViewModel = NotesListViewModel(),
 ) {
 
+    val viewModel = remember {
+        NotesListViewModel()
+    }
+
     val notesListState by viewModel.uiState.collectAsState()
-    val selectedNote = remember { mutableStateOf("") }
+    val selectedNote = remember { mutableIntStateOf(OUT_OF_RANGE_ID) }
     val haveSelectedNote = remember { mutableStateOf(false) }
 
     BackHandler(
         enabled = haveSelectedNote.value
     ) {
-        selectedNote.value = ""
+        selectedNote.intValue = OUT_OF_RANGE_ID
         haveSelectedNote.value = false
         onBackPressed(haveSelectedNote.value)
     }
 
-    Notes(
-        notes = notesListState.notes,
-        selectedId = selectedNote.value,
-        onNoteClick = { note ->
-            selectedNote.value = note.id
-            haveSelectedNote.value = selectedNote.value.isNotEmpty()
-            onNoteClick(note, haveSelectedNote.value)
-        },
-        modifier = modifier,
-    )
+    if (notesListState.notes.isNotEmpty()) {
+        Notes(
+            notes = notesListState.notes,
+            selectedId = selectedNote.intValue,
+            onNoteClick = { note ->
+                selectedNote.intValue = note.id
+                haveSelectedNote.value = selectedNote.intValue > OUT_OF_RANGE_ID
+                onNoteClick(note, haveSelectedNote.value)
+            },
+            modifier = modifier,
+        )
+    } else {
+        NotesEmptyState()
+    }
+
 }
 
 @Composable
 private fun Notes(
     notes: List<Note>,
-    selectedId: String,
+    selectedId: Int,
     onNoteClick: (Note) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -87,7 +98,7 @@ private fun NotesListLightPreview() {
     AnoteiTheme {
         Notes(
             notes = notesListMock,
-            selectedId = "",
+            selectedId = OUT_OF_RANGE_ID,
             onNoteClick = {}
         )
     }

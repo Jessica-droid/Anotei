@@ -27,7 +27,7 @@ fun NoteOptionsBar(
         containerColor = AnoteiAppTheme.colors.bottomBarColor,
         actions = {
             options.map { option ->
-                Option(option)
+                NoteOption(option)
             }
         },
         floatingActionButton = {
