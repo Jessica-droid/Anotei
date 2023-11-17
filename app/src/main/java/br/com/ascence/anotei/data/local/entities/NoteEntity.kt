@@ -9,11 +9,11 @@ data class NoteEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val type: NoteEntityType = NoteEntityType.TEXT,
     val title: String = "",
-    val status: List<NoteEntityStatus> = emptyList(),
+    val status: MutableList<NoteEntityStatus>,
     val category: NoteEntityCategory = NoteEntityCategory.DEFAULT,
     @ColumnInfo(name = "creation_date") val creationDateInMillis: Long,
     val description: String? = null,
-    val itemsList: List<String>? = null,
+    @ColumnInfo(name= "items",defaultValue = "")val itemsList: MutableList<String>? = null,
 ) {
     enum class NoteEntityType {
         TEXT,
