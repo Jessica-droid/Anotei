@@ -12,8 +12,8 @@ data class NoteEntity(
     val status: MutableList<NoteEntityStatus>,
     val category: NoteEntityCategory = NoteEntityCategory.DEFAULT,
     @ColumnInfo(name = "creation_date") val creationDateInMillis: Long,
-    val description: String? = null,
-    @ColumnInfo(name= "items",defaultValue = "")val itemsList: MutableList<String>? = null,
+    val description: String?,
+    @ColumnInfo(name= "items")val itemsList: MutableList<String>?,
 ) {
     enum class NoteEntityType {
         TEXT,
