@@ -75,9 +75,11 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.5")
 
     //Room
+    implementation ("com.google.code.gson:gson:2.8.8")
     implementation("androidx.room:room-runtime:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+    ksp("androidx.lifecycle:lifecycle-common:2.6.2")
     testImplementation("androidx.room:room-testing:$roomVersion")
 
     testImplementation("junit:junit:4.13.2")

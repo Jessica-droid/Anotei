@@ -3,6 +3,7 @@ package br.com.ascence.anotei.ui.screens.notelist
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,6 +15,9 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import br.com.ascence.anotei.data.local.AnoteiDatabase
+import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
 import br.com.ascence.anotei.data.mock.notesListMock
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.Note
@@ -30,8 +34,13 @@ fun NotesListScreen(
     modifier: Modifier = Modifier,
 ) {
 
+    val contextCompat = LocalContext.current
+
+    val db = AnoteiDatabase.getDatabase(context = contextCompat)
+    val repository = NotesRepositoryImp(db.noteDao())
+
     val viewModel = remember {
-        NotesListViewModel()
+        NotesListViewModel(repository)
     }
 
     val notesListState by viewModel.uiState.collectAsState()
@@ -46,21 +55,40 @@ fun NotesListScreen(
         onBackPressed(haveSelectedNote.value)
     }
 
-    if (notesListState.notes.isNotEmpty()) {
+    ListContent(
+        notes = notesListState.notes,
+        selectedId = selectedNote.intValue,
+        onNoteClick = { note ->
+            selectedNote.intValue = note.id
+            haveSelectedNote.value = selectedNote.intValue > OUT_OF_RANGE_ID
+            onNoteClick(note, haveSelectedNote.value)
+        },
+        modifier = modifier,
+    )
+
+}
+
+@Composable
+private fun ListContent(
+    notes: List<Note>,
+    selectedId: Int,
+    onNoteClick: (Note) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (notes.isNotEmpty()) {
         Notes(
-            notes = notesListState.notes,
-            selectedId = selectedNote.intValue,
-            onNoteClick = { note ->
-                selectedNote.intValue = note.id
-                haveSelectedNote.value = selectedNote.intValue > OUT_OF_RANGE_ID
-                onNoteClick(note, haveSelectedNote.value)
-            },
+            notes = notes,
+            selectedId = selectedId,
+            onNoteClick = onNoteClick,
             modifier = modifier,
         )
     } else {
-        NotesEmptyState()
+        NotesEmptyState(
+            modifier = modifier
+                .fillMaxSize()
+                .background(color = AnoteiAppTheme.colors.colorScheme.background)
+        )
     }
-
 }
 
 @Composable
@@ -94,10 +122,22 @@ private fun Notes(
 
 @ColorSchemePreviews
 @Composable
-private fun NotesListLightPreview() {
+private fun NotesListPreview() {
     AnoteiTheme {
-        Notes(
+        ListContent(
             notes = notesListMock,
+            selectedId = OUT_OF_RANGE_ID,
+            onNoteClick = {}
+        )
+    }
+}
+
+@ColorSchemePreviews
+@Composable
+private fun NotesListEmptyPreview() {
+    AnoteiTheme {
+        ListContent(
+            notes = emptyList(),
             selectedId = OUT_OF_RANGE_ID,
             onNoteClick = {}
         )
