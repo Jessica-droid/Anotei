@@ -43,7 +43,7 @@ fun NoteScreen(navController: NavController) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteScreenContent(
-    onBackPressed: () -> Unit,
+    onBackPressed: (String) -> Unit,
 ) {
 
     val focusRequester = remember { FocusRequester() }

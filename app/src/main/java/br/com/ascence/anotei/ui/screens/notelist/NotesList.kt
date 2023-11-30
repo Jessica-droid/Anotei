@@ -9,15 +9,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import br.com.ascence.anotei.data.local.AnoteiDatabase
-import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
 import br.com.ascence.anotei.data.mock.notesListMock
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.Note
@@ -29,21 +24,11 @@ private const val OUT_OF_RANGE_ID = -1
 
 @Composable
 fun NotesListScreen(
+    notesList: List<Note>,
     onNoteClick: (Note, Boolean) -> Unit,
     onBackPressed: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
-    val contextCompat = LocalContext.current
-
-    val db = AnoteiDatabase.getDatabase(context = contextCompat)
-    val repository = NotesRepositoryImp(db.noteDao())
-
-    val viewModel = remember {
-        NotesListViewModel(repository)
-    }
-
-    val notesListState by viewModel.uiState.collectAsState()
     val selectedNote = remember { mutableIntStateOf(OUT_OF_RANGE_ID) }
     val haveSelectedNote = remember { mutableStateOf(false) }
 
@@ -56,7 +41,7 @@ fun NotesListScreen(
     }
 
     ListContent(
-        notes = notesListState.notes,
+        notes = notesList,
         selectedId = selectedNote.intValue,
         onNoteClick = { note ->
             selectedNote.intValue = note.id

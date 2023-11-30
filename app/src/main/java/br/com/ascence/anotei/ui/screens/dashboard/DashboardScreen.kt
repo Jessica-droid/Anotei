@@ -1,6 +1,6 @@
 package br.com.ascence.anotei.ui.screens.dashboard
 
-import android.content.Intent
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -13,10 +13,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import br.com.ascence.anotei.data.local.AnoteiDatabase
+import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.NoteOption
-import br.com.ascence.anotei.ui.screens.note.NoteActivity
+import br.com.ascence.anotei.navigation.NOTE_RESULT_CREATED_OR_UPDATED
+import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
+import br.com.ascence.anotei.navigation.activitycontracts.newnote.NewNoteActivityResultContract
+import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
 import br.com.ascence.anotei.ui.screens.notelist.NotesListScreen
 import br.com.ascence.anotei.ui.screens.dashboard.components.DashAppBar
 import br.com.ascence.anotei.ui.screens.dashboard.components.DashNoteOptionsBar
@@ -25,15 +30,30 @@ import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
 @Composable
 fun DashboardScreen() {
+    val contextCompat = LocalContext.current
+
+    val db = AnoteiDatabase.getDatabase(context = contextCompat)
+    val repository = NotesRepositoryImp(db.noteDao())
+
     val viewModel = remember {
-        DashboardViewModel()
+        DashboardViewModel(repository)
     }
 
     val state by viewModel.uiState.collectAsState()
     val showNoteOptions = remember { mutableStateOf(false) }
-    val context = LocalContext.current
+
+    val newNoteActivity = rememberLauncherForActivityResult(
+        contract = NewNoteActivityResultContract(),
+        onResult = { result ->
+            when (result) {
+                NOTE_RESULT_CREATED_OR_UPDATED -> println(">>>>>>>> CREATED")
+                NOTE_RESULT_NOTHING -> println(">>>>>>>> NOTHING")
+            }
+        }
+    )
 
     DashBoardContent(
+        notesList = state.notesList,
         showNoteOptions = showNoteOptions.value,
         options = state.noteOptions,
         onNoteClick = { note, haveSelectedNote ->
@@ -44,7 +64,7 @@ fun DashboardScreen() {
             showNoteOptions.value = haveSelectedNote
         },
         onNewNoteClick = {
-            context.startActivity(Intent(context, NoteActivity::class.java))
+            newNoteActivity.launch(NoteType.NEW_NOTE)
         }
     )
 }
@@ -54,6 +74,7 @@ fun DashboardScreen() {
 private fun DashBoardContent(
     showNoteOptions: Boolean,
     options: List<NoteOption>,
+    notesList: List<Note>,
     onNoteClick: (Note, Boolean) -> Unit,
     onBackPressed: (Boolean) -> Unit,
     onNewNoteClick: () -> Unit,
@@ -77,6 +98,7 @@ private fun DashBoardContent(
         }
     ) { innerPadding ->
         NotesListScreen(
+            notesList = notesList,
             onNoteClick = onNoteClick,
             onBackPressed = onBackPressed,
             modifier = Modifier.padding(innerPadding)
@@ -89,6 +111,7 @@ private fun DashBoardContent(
 fun DashboardPreview() {
     AnoteiTheme {
         DashBoardContent(
+            notesList = emptyList(),
             showNoteOptions = false,
             options = emptyList(),
             onNoteClick = { _, _ -> },
