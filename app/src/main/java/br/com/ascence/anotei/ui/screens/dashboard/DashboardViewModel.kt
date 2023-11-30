@@ -1,20 +1,38 @@
 package br.com.ascence.anotei.ui.screens.dashboard
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import br.com.ascence.anotei.data.local.extension.toNotesList
+import br.com.ascence.anotei.data.local.repositories.NotesRepository
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.extension.getOptions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class DashboardViewModel : ViewModel() {
+class DashboardViewModel(
+    private val notesRepository: NotesRepository,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DashBoardState())
     val uiState: StateFlow<DashBoardState> = _uiState.asStateFlow()
 
     init {
-        _uiState.value = DashBoardState()
+        fetchNotes()
+    }
+
+    private fun fetchNotes() {
+        viewModelScope.launch {
+            notesRepository.getAllNotesStream().collect { entities ->
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        notesList = entities.toNotesList()
+                    )
+                }
+            }
+        }
     }
 
     fun setupNoteOptions(note: Note) {
