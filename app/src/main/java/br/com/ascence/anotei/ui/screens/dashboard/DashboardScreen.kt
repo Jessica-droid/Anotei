@@ -3,7 +3,6 @@ package br.com.ascence.anotei.ui.screens.dashboard
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -69,7 +68,6 @@ fun DashboardScreen() {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DashBoardContent(
     showNoteOptions: Boolean,
