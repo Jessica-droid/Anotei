@@ -25,6 +25,7 @@ import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.data.preview.mock.noteOptionsPreview
 import br.com.ascence.anotei.model.extension.getColor
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
+import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
 import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsBar
 import br.com.ascence.anotei.ui.presentation.NoteOptionsPresentationType
 import br.com.ascence.anotei.ui.screens.note.components.NoteAppBar
@@ -35,6 +36,7 @@ import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
 @Composable
 fun NoteScreenContent(
+    noteType: NoteType,
     onBackPressed: (String) -> Unit,
 ) {
 
@@ -117,6 +119,9 @@ fun NoteScreenContent(
 @Composable
 private fun NoteScreenPreviewLight() {
     AnoteiTheme {
-        NoteScreenContent(onBackPressed = {})
+        NoteScreenContent(
+            noteType = NoteType.NEW_NOTE,
+            onBackPressed = {}
+        )
     }
 }

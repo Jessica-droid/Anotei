@@ -63,7 +63,7 @@ fun DashboardScreen() {
             showNoteOptions.value = haveSelectedNote
         },
         onNewNoteClick = {
-            newNoteActivity.launch(NoteType.NEW_NOTE)
+            newNoteActivity.launch(NoteType.UPDATE_NOTE)
         }
     )
 }
