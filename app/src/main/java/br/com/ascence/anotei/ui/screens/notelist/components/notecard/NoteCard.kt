@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.data.preview.mock.fakeTextNote
-import br.com.ascence.anotei.model.extension.getCategoryColor
 import br.com.ascence.anotei.model.extension.toStatusPresentation
 import br.com.ascence.anotei.model.Note
+import br.com.ascence.anotei.model.extension.getColor
 import br.com.ascence.anotei.ui.presentation.NoteStatusPresentation
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
@@ -76,7 +76,7 @@ private fun CardContent(
             NoteCardHeader(
                 title = note.title,
                 creationDate = note.creationDate.toString(), // TODO format date
-                categoryColor = note.getCategoryColor(),
+                categoryColor = note.category.getColor(),
                 status = statusPresentation
             )
 
