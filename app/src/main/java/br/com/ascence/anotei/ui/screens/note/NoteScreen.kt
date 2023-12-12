@@ -30,7 +30,7 @@ import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsBar
 import br.com.ascence.anotei.ui.presentation.NoteOptionsPresentationType
 import br.com.ascence.anotei.ui.screens.note.components.NoteAppBar
 import br.com.ascence.anotei.ui.screens.note.components.NoteHeader
-import br.com.ascence.anotei.ui.screens.note.dialogs.ContentAlertDialog
+import br.com.ascence.anotei.ui.screens.note.dialogs.SimpleDialog
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
@@ -82,7 +82,11 @@ fun NoteScreenContent(
                 .background(AnoteiAppTheme.colors.colorScheme.background)
         ) {
             if (state.value.showContentAlert) {
-                ContentAlertDialog(
+                SimpleDialog(
+                    title = "Descartar nota?",
+                    message = "Deseja descartar o que anotou até o momento?",
+                    confirmLabel = "Confirmar",
+                    dismissLabel = "Cancelar",
                     onDismiss = { viewModel.hideContentAlertDialog() },
                     onConfirm = { onBackPressed(NOTE_RESULT_NOTHING) }
                 )

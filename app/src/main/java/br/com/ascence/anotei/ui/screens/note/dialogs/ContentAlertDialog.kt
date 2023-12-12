@@ -9,33 +9,63 @@ import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
 @Composable
-fun ContentAlertDialog(onDismiss: () -> Unit, onConfirm: () -> Unit) {
+fun SimpleDialog(
+    title: String,
+    message: String,
+    onConfirm: () -> Unit,
+    confirmLabel: String,
+    onDismiss: () -> Unit,
+    dismissLabel: String? = null,
+) {
     AlertDialog(
+        title = { Text(text = title) },
+        text = { Text(text = message) },
+        titleContentColor = AnoteiAppTheme.colors.primaryTextColor,
+        textContentColor = AnoteiAppTheme.colors.secondaryTextColor,
         onDismissRequest = onDismiss,
+        dismissButton = {
+            dismissLabel?.let { actionLabel ->
+                TextButton(
+                    content = { Text(actionLabel, color = AnoteiAppTheme.colors.accentColor) },
+                    onClick = onDismiss
+                )
+            }
+        },
         confirmButton = {
             TextButton(
-                content = { Text("Confirmar", color = AnoteiAppTheme.colors.accentColor) },
+                content = { Text(confirmLabel, color = AnoteiAppTheme.colors.accentColor) },
                 onClick = onConfirm
             )
         },
-        title = { Text(text = "Descartar nota?") },
-        text = { Text("Você deseja descartar o que anotou até agora?") },
-        dismissButton = {
-            TextButton(
-                content = { Text("Cancelar", color = AnoteiAppTheme.colors.accentColor) },
-                onClick = onDismiss
-            )
-        },
         containerColor = AnoteiAppTheme.colors.secondaryBackgroundColor,
-        titleContentColor = AnoteiAppTheme.colors.primaryTextColor,
-        textContentColor = AnoteiAppTheme.colors.secondaryTextColor
     )
 }
 
 @Composable
 @ColorSchemePreviews
-private fun ContentAlertDialogPreview() {
+private fun SimpleAlertDialogWithDismissPreview() {
     AnoteiTheme {
-        ContentAlertDialog(onDismiss = {}, onConfirm = {})
+        SimpleDialog(
+            title = "Descartar nota?",
+            message = "Você deseja descartar o que anotou até agora?",
+            confirmLabel = "Confirmar",
+            dismissLabel = "Cancelar",
+            onDismiss = {},
+            onConfirm = {}
+        )
+    }
+}
+
+@Composable
+@ColorSchemePreviews
+private fun SimpleAlertDialogWithoutDismissPreview() {
+    AnoteiTheme {
+        SimpleDialog(
+            title = "Um momento!",
+            message = "Anote alguma coisa antes de salvar.",
+            confirmLabel = "Confirmar",
+            onDismiss = {},
+            onConfirm = {}
+        )
     }
 }
