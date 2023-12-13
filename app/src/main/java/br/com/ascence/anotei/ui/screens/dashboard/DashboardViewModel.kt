@@ -2,7 +2,6 @@ package br.com.ascence.anotei.ui.screens.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.ascence.anotei.data.local.extension.toNotesList
 import br.com.ascence.anotei.data.local.repositories.NotesRepository
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.extension.getOptions
@@ -24,7 +23,7 @@ class DashboardViewModel(
             notesRepository.getAllNotesStream().collect { entities ->
                 _uiState.update { currentState ->
                     currentState.copy(
-                        notesList = entities.toNotesList()
+                        notesList = entities
                     )
                 }
             }
