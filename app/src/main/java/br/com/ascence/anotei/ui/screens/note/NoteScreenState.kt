@@ -4,6 +4,7 @@ import br.com.ascence.anotei.model.Category
 
 data class NoteScreenState(
     val showContentAlert: Boolean = false,
+    val showEmptyNoteAlert: Boolean = false,
     val title: String = "Sem título",
     val description: String = "",
     val noteCategory: Category = Category.DEFAULT

@@ -13,7 +13,7 @@ data class NoteEntity(
     val category: NoteEntityCategory = NoteEntityCategory.DEFAULT,
     @ColumnInfo(name = "creation_date") val creationDateInMillis: Long,
     val description: String?,
-    @ColumnInfo(name= "items")val itemsList: MutableList<String>?,
+    @ColumnInfo(name= "items")val itemsList: MutableList<String>? = null,
 ) {
     enum class NoteEntityType {
         TEXT,

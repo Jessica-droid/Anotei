@@ -6,13 +6,18 @@ import br.com.ascence.anotei.data.local.entities.NoteEntity.NoteEntityStatus
 class EnumConverter {
 
     @TypeConverter
-    fun stringToEnumStatusList(value: String): MutableList<NoteEntityStatus> {
-        val stringStatusList = value.split(",")
+    fun stringToEnumStatusList(value: String): MutableList<NoteEntityStatus> =
+        if (value.isNotEmpty()) {
 
-        return stringStatusList.map { statusString ->
-            NoteEntityStatus.valueOf(statusString)
-        }.toMutableList()
-    }
+            val stringStatusList = value.split(",")
+
+            stringStatusList.map { statusString ->
+                NoteEntityStatus.valueOf(statusString)
+            }.toMutableList()
+        } else {
+            mutableListOf()
+        }
+
 
     @TypeConverter
     fun enumStatusListToString(value: MutableList<NoteEntityStatus>): String =

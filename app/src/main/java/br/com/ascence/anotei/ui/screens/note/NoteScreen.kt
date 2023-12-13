@@ -19,11 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import br.com.ascence.anotei.data.local.AnoteiDatabase
+import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.data.preview.mock.noteOptionsPreview
 import br.com.ascence.anotei.model.extension.getColor
+import br.com.ascence.anotei.navigation.NOTE_RESULT_CREATED_OR_UPDATED
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
 import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsBar
@@ -40,11 +44,16 @@ fun NoteScreenContent(
     onBackPressed: (String) -> Unit,
 ) {
 
-    val focusRequester = remember { FocusRequester() }
+    val contextCompat = LocalContext.current
+
+    val db = AnoteiDatabase.getDatabase(context = contextCompat)
+    val repository = NotesRepositoryImp(db.noteDao())
 
     val viewModel = remember {
-        NoteScreenViewModel()
+        NoteScreenViewModel(repository)
     }
+
+    val focusRequester = remember { FocusRequester() }
 
     val state = viewModel.screenState.collectAsState()
 
@@ -70,7 +79,7 @@ fun NoteScreenContent(
         bottomBar = {
             NoteOptionsBar(
                 options = noteOptionsPreview,
-                onFABClick = {}, // TODO setup note save
+                onFABClick = { viewModel.saveNote(onBackPressed) },
                 optionType = NoteOptionsPresentationType.EDIT_MODE
             )
         }
@@ -91,6 +100,17 @@ fun NoteScreenContent(
                     onConfirm = { onBackPressed(NOTE_RESULT_NOTHING) }
                 )
             }
+
+            if (state.value.showEmptyNoteAlert) {
+                SimpleDialog(
+                    title = "Um momento!",
+                    message = "Anote alguma coisa antes de salvar.",
+                    confirmLabel = "Entendi",
+                    onDismiss = { viewModel.hideEmptyNoteAlert() },
+                    onConfirm = { viewModel.hideEmptyNoteAlert() }
+                )
+            }
+
             NoteHeader(
                 noteCategoryColor = state.value.noteCategory.getColor(),
                 titleInitialValue = state.value.title,
