@@ -58,25 +58,18 @@ class NoteScreenViewModel(
         }
     }
 
-    fun saveNote(onSaveNote: (String)-> Unit) {
+    fun saveNote(onSaveNote: (String) -> Unit) {
 
         handleNoteContent()
 
         if (_uiState.value.showEmptyNoteAlert.not()) {
-            val note = Note.TextNote(
-                id = NEW_NOTE_ID,
-                title = _uiState.value.title,
-                status = emptyList(), // TODO setup note status
-                category = _uiState.value.noteCategory,
-                creationDate = Date(),
-                description = _uiState.value.description
-            )
+
+            val note = newTextNoteSetup()
 
             viewModelScope.launch {
                 runCatching {
                     notesRepository.createNote(note)
                 }.onSuccess {
-                    cleanScreenState()
                     onSaveNote(NOTE_RESULT_CREATED_OR_UPDATED)
                 }.onFailure {
                     println(">>>>>> DEU RUIM ${it.message}")
@@ -92,6 +85,16 @@ class NoteScreenViewModel(
             )
         }
     }
+
+    private fun newTextNoteSetup(): Note =
+        Note.TextNote(
+            id = NEW_NOTE_ID,
+            title = _uiState.value.title,
+            status = emptyList(), // TODO setup note status
+            category = _uiState.value.noteCategory,
+            creationDate = Date(),
+            description = _uiState.value.description
+        )
 
     private fun handleNoteContent() {
         _uiState.update { currentState ->
