@@ -19,11 +19,7 @@ class DashboardViewModel(
     private val _uiState = MutableStateFlow(DashBoardState())
     val uiState: StateFlow<DashBoardState> = _uiState.asStateFlow()
 
-    init {
-        fetchNotes()
-    }
-
-    private fun fetchNotes() {
+    fun fetchNotes() {
         viewModelScope.launch {
             notesRepository.getAllNotesStream().collect { entities ->
                 _uiState.update { currentState ->

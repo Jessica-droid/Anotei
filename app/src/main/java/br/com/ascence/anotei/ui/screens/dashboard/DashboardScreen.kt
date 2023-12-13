@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,11 +46,15 @@ fun DashboardScreen() {
         contract = NewNoteActivityResultContract(),
         onResult = { result ->
             when (result) {
-                NOTE_RESULT_CREATED_OR_UPDATED -> println(">>>>>>>> CREATED")
+                NOTE_RESULT_CREATED_OR_UPDATED -> viewModel.fetchNotes()
                 NOTE_RESULT_NOTHING -> println(">>>>>>>> NOTHING")
             }
         }
     )
+
+    LaunchedEffect(key1 = Unit) {
+        viewModel.fetchNotes()
+    }
 
     DashBoardContent(
         notesList = state.notesList,
@@ -99,7 +104,9 @@ private fun DashBoardContent(
             notesList = notesList,
             onNoteClick = onNoteClick,
             onBackPressed = onBackPressed,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         )
     }
 }
