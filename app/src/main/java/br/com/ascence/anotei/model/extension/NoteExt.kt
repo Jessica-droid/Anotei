@@ -34,7 +34,7 @@ fun Note.getOptions(
     onCategoryClick: () -> Unit,
     onScheduleClick: () -> Unit,
     onProtectClick: () -> Unit,
-    onDeleteClick: () -> Unit,
+    onDeleteClick:  () -> Unit,
 ): List<NoteOption> = listOf(
     NoteOption.Category(
         action = onCategoryClick,

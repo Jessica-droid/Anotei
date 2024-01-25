@@ -5,5 +5,6 @@ import br.com.ascence.anotei.model.NoteOption
 
 data class DashBoardState(
     val notesList: List<Note> = emptyList(),
-    val noteOptions: List<NoteOption> = emptyList()
+    val noteOptions: List<NoteOption> = emptyList(),
+    val showNoteOptions: Boolean = false,
 )

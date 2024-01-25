@@ -40,7 +40,7 @@ fun DashboardScreen() {
     }
 
     val state by viewModel.uiState.collectAsState()
-    val showNoteOptions = remember { mutableStateOf(false) }
+    val showNoteOptions = state.showNoteOptions
 
     val newNoteActivity = rememberLauncherForActivityResult(
         contract = NewNoteActivityResultContract(),
@@ -58,14 +58,14 @@ fun DashboardScreen() {
 
     DashBoardContent(
         notesList = state.notesList,
-        showNoteOptions = showNoteOptions.value,
+        showNoteOptions = showNoteOptions,
         options = state.noteOptions,
         onNoteClick = { note, haveSelectedNote ->
             viewModel.setupNoteOptions(note)
-            showNoteOptions.value = haveSelectedNote
+            viewModel.updateOptionsVisibility(showOptions = haveSelectedNote)
         },
         onBackPressed = { haveSelectedNote ->
-            showNoteOptions.value = haveSelectedNote
+            viewModel.updateOptionsVisibility(showOptions = haveSelectedNote)
         },
         onNewNoteClick = {
             newNoteActivity.launch(NoteType.UPDATE_NOTE)
