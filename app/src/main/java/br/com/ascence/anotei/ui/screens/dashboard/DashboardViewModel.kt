@@ -25,30 +25,43 @@ class DashboardViewModel(
                 _uiState.update { currentState ->
                     currentState.copy(
                         notesList = entities,
-                        showNoteOptions = false
+                        showNoteOptions = false,
+                        selectedNote = null
                     )
                 }
             }
         }
     }
 
-    fun setupNoteOptions(note: Note) {
-
-        val options = note.getOptions(
-            onCategoryClick = {}, // TODO setup category selection
-            onScheduleClick = {}, // TODO setup scheduling
-            onProtectClick = {}, // TODO setup note protection
-            onDeleteClick = { deleteNote(note) }
-        )
-
+    fun updateNoteSelection(note: Note?) {
         _uiState.update { currentState ->
-            currentState.copy(noteOptions = options)
+            currentState.copy(selectedNote = note)
         }
+        note?.let { setupNoteOptions() }
     }
 
     fun updateOptionsVisibility(showOptions: Boolean) {
         _uiState.update { currentState ->
             currentState.copy(showNoteOptions = showOptions)
+        }
+    }
+
+    fun setupNoteOptions() {
+        val selectedNote = _uiState.value.selectedNote
+
+        if (selectedNote != null) {
+
+            val options = selectedNote.getOptions(
+                onCategoryClick = {}, // TODO setup category selection
+                onScheduleClick = {}, // TODO setup scheduling
+                onProtectClick = {}, // TODO setup note protection
+                onDeleteClick = { deleteNote(selectedNote) }
+            )
+
+            _uiState.update { currentState ->
+                currentState.copy(noteOptions = options)
+            }
+
         }
     }
 

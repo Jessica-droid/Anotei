@@ -20,6 +20,7 @@ import br.com.ascence.anotei.model.extension.getColor
 import br.com.ascence.anotei.ui.presentation.NoteStatusPresentation
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
+import br.com.ascence.anotei.utils.date.DateHelper
 
 private const val UNSELECTED_CARD_CONTENT_MAX_LINES = 3
 
@@ -75,7 +76,7 @@ private fun CardContent(
         ) {
             NoteCardHeader(
                 title = note.title,
-                creationDate = note.creationDate.toString(), // TODO format date
+                creationDate = DateHelper().formatDateToString(note.creationDate),
                 categoryColor = note.category.getColor(),
                 status = statusPresentation
             )

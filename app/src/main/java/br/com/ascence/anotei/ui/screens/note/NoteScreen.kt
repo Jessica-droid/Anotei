@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -26,8 +27,8 @@ import br.com.ascence.anotei.data.local.AnoteiDatabase
 import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.data.preview.mock.noteOptionsPreview
+import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.extension.getColor
-import br.com.ascence.anotei.navigation.NOTE_RESULT_CREATED_OR_UPDATED
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
 import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsBar
@@ -37,10 +38,13 @@ import br.com.ascence.anotei.ui.screens.note.components.NoteHeader
 import br.com.ascence.anotei.ui.screens.note.dialogs.SimpleDialog
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
+import br.com.ascence.anotei.utils.date.DateHelper
+import java.util.Date
 
 @Composable
 fun NoteScreenContent(
     noteType: NoteType,
+    note: Note.TextNote?,
     onBackPressed: (String) -> Unit,
 ) {
 
@@ -55,14 +59,28 @@ fun NoteScreenContent(
 
     val focusRequester = remember { FocusRequester() }
 
-    val state = viewModel.screenState.collectAsState()
+    val state by viewModel.screenState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+    val noteCreationDate =
+        if (noteType == NoteType.NEW_NOTE) {
+            DateHelper().formatDateToString(Date())
+        } else {
+            state.creationDate
+        }
+
+    LaunchedEffect(noteType) {
+        when (noteType) {
+            NoteType.NEW_NOTE -> {
+                viewModel.fetchNoteContent(noteType)
+                focusRequester.requestFocus()
+            }
+
+            NoteType.UPDATE_NOTE -> viewModel.fetchNoteContent(noteType, note)
+        }
     }
 
-    BackHandler(enabled = state.value.showContentAlert.not()) {
-        viewModel.handleOnBackPressed(onBackPressed)
+    BackHandler(enabled = state.showContentAlert.not()) {
+        viewModel.handleOnBackPressed(noteType, onBackPressed)
     }
 
     Scaffold(
@@ -73,13 +91,13 @@ fun NoteScreenContent(
             .imePadding(),
         topBar = {
             NoteAppBar {
-                viewModel.handleOnBackPressed(onBackPressed)
+                viewModel.handleOnBackPressed(noteType, onBackPressed)
             }
         },
         bottomBar = {
             NoteOptionsBar(
                 options = noteOptionsPreview,
-                onFABClick = { viewModel.saveNote(onBackPressed) },
+                onFABClick = { viewModel.handleNote(noteType, note, onBackPressed) },
                 optionType = NoteOptionsPresentationType.EDIT_MODE
             )
         }
@@ -90,7 +108,7 @@ fun NoteScreenContent(
                 .padding(innerPadding)
                 .background(AnoteiAppTheme.colors.colorScheme.background)
         ) {
-            if (state.value.showContentAlert) {
+            if (state.showContentAlert) {
                 SimpleDialog(
                     title = "Descartar nota?",
                     message = "Deseja descartar o que anotou até o momento?",
@@ -101,7 +119,7 @@ fun NoteScreenContent(
                 )
             }
 
-            if (state.value.showEmptyNoteAlert) {
+            if (state.showEmptyNoteAlert) {
                 SimpleDialog(
                     title = "Um momento!",
                     message = "Anote alguma coisa antes de salvar.",
@@ -112,15 +130,16 @@ fun NoteScreenContent(
             }
 
             NoteHeader(
-                noteCategoryColor = state.value.noteCategory.getColor(),
-                titleInitialValue = state.value.title,
+                noteCategoryColor = state.noteCategory.getColor(),
+                titleInitialValue = state.title,
+                creationDateValue = noteCreationDate,
                 onTitleChanged = { newTitle ->
                     viewModel.onTitleUpdate(newTitle)
                 },
                 modifier = Modifier.padding(horizontal = AnoteiAppTheme.spaces.medium)
             )
             BasicTextField(
-                value = state.value.description,
+                value = state.description,
                 textStyle = TextStyle(
                     color = AnoteiAppTheme.colors.secondaryTextColor,
                     fontSize = AnoteiAppTheme.fontSizes.medium,
@@ -145,6 +164,7 @@ private fun NoteScreenPreviewLight() {
     AnoteiTheme {
         NoteScreenContent(
             noteType = NoteType.NEW_NOTE,
+            note = null,
             onBackPressed = {}
         )
     }

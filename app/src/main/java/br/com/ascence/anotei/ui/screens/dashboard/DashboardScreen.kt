@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -42,8 +41,8 @@ fun DashboardScreen() {
     val state by viewModel.uiState.collectAsState()
     val showNoteOptions = state.showNoteOptions
 
-    val newNoteActivity = rememberLauncherForActivityResult(
-        contract = NewNoteActivityResultContract(),
+    val noteScreen = rememberLauncherForActivityResult(
+        contract = NewNoteActivityResultContract(note = state.selectedNote as? Note.TextNote),
         onResult = { result ->
             when (result) {
                 NOTE_RESULT_CREATED_OR_UPDATED -> viewModel.fetchNotes()
@@ -56,19 +55,26 @@ fun DashboardScreen() {
         viewModel.fetchNotes()
     }
 
+    LaunchedEffect(state.selectedNote){
+        viewModel.setupNoteOptions()
+    }
+
     DashBoardContent(
         notesList = state.notesList,
         showNoteOptions = showNoteOptions,
         options = state.noteOptions,
         onNoteClick = { note, haveSelectedNote ->
-            viewModel.setupNoteOptions(note)
+            viewModel.updateNoteSelection(note)
             viewModel.updateOptionsVisibility(showOptions = haveSelectedNote)
         },
         onBackPressed = { haveSelectedNote ->
             viewModel.updateOptionsVisibility(showOptions = haveSelectedNote)
         },
         onNewNoteClick = {
-            newNoteActivity.launch(NoteType.UPDATE_NOTE)
+            noteScreen.launch(NoteType.NEW_NOTE)
+        },
+        onAlterNoteClick = {
+            noteScreen.launch(NoteType.UPDATE_NOTE)
         }
     )
 }
@@ -81,6 +87,7 @@ private fun DashBoardContent(
     onNoteClick: (Note, Boolean) -> Unit,
     onBackPressed: (Boolean) -> Unit,
     onNewNoteClick: () -> Unit,
+    onAlterNoteClick: ()-> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -96,7 +103,7 @@ private fun DashBoardContent(
             DashNoteOptionsBar(
                 showBottomBar = showNoteOptions,
                 options = options,
-                onFABClick = {} // TODO setup note Edit,
+                onFABClick = onAlterNoteClick
             )
         }
     ) { innerPadding ->
@@ -121,7 +128,8 @@ fun DashboardPreview() {
             options = emptyList(),
             onNoteClick = { _, _ -> },
             onNewNoteClick = {},
-            onBackPressed = {}
+            onBackPressed = {},
+            onAlterNoteClick = {}
         )
     }
 }
