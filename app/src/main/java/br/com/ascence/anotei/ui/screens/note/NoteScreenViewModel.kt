@@ -7,6 +7,8 @@ import br.com.ascence.anotei.model.Category
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.navigation.NOTE_RESULT_CREATED_OR_UPDATED
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
+import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
+import br.com.ascence.anotei.utils.date.DateHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,6 +41,31 @@ class NoteScreenViewModel(
         }
     }
 
+    fun fetchNoteContent(noteType: NoteType, note: Note.TextNote? = null) {
+        when (noteType) {
+            NoteType.NEW_NOTE -> {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        creationDate = DateHelper().formatDateToString(Date()),
+                    )
+                }
+            }
+
+            NoteType.UPDATE_NOTE -> {
+                note?.let {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            title = note.title,
+                            creationDate = DateHelper().formatDateToString(note.creationDate),
+                            description = note.description,
+                            noteCategory = note.category,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun hideContentAlertDialog() {
         _uiState.update { currentState ->
             currentState.copy(
@@ -47,34 +74,17 @@ class NoteScreenViewModel(
         }
     }
 
-    fun handleOnBackPressed(onCloseScreen: (String) -> Unit) {
+    fun handleOnBackPressed(noteType: NoteType, onCloseScreen: (String) -> Unit) {
+        val shouldShowContentAlert =
+            _uiState.value.description.isNotEmpty() && noteType == NoteType.NEW_NOTE
+
         _uiState.update { currentState ->
             currentState.copy(
-                showContentAlert = currentState.description.isNotEmpty()
+                showContentAlert = shouldShowContentAlert
             )
         }
         if (_uiState.value.showContentAlert.not()) {
             onCloseScreen(NOTE_RESULT_NOTHING)
-        }
-    }
-
-    fun saveNote(onSaveNote: (String) -> Unit) {
-
-        handleNoteContent()
-
-        if (_uiState.value.showEmptyNoteAlert.not()) {
-
-            val note = newTextNoteSetup()
-
-            viewModelScope.launch {
-                runCatching {
-                    notesRepository.createNote(note)
-                }.onSuccess {
-                    onSaveNote(NOTE_RESULT_CREATED_OR_UPDATED)
-                }.onFailure {
-                    println(">>>>>> DEU RUIM ${it.message}")
-                }
-            }
         }
     }
 
@@ -83,6 +93,59 @@ class NoteScreenViewModel(
             currentState.copy(
                 showEmptyNoteAlert = false
             )
+        }
+    }
+
+    fun handleNote(noteType: NoteType, note: Note?, onSaveNote: (String) -> Unit) {
+        handleNoteContent()
+
+        if (_uiState.value.showEmptyNoteAlert.not()) {
+            saveOrUpdateNote(noteType, note, onSaveNote)
+        }
+    }
+
+    private fun saveOrUpdateNote(noteType: NoteType, note: Note?, onSaveNote: (String) -> Unit) {
+        when (noteType) {
+            NoteType.NEW_NOTE -> createNote(onSaveNote)
+            NoteType.UPDATE_NOTE -> note?.let {
+                updateNote(it, onSaveNote)
+            }
+        }
+    }
+
+    private fun createNote(onSaveNote: (String) -> Unit) {
+        val note = newTextNoteSetup()
+
+        viewModelScope.launch {
+            runCatching {
+                notesRepository.createNote(note)
+            }.onSuccess {
+                onSaveNote(NOTE_RESULT_CREATED_OR_UPDATED)
+            }.onFailure {
+                println(">>>>>> DEU RUIM ${it.message}")
+            }
+        }
+    }
+
+    private fun updateNote(note: Note, onSaveNote: (String) -> Unit) {
+
+        val noteToUpdate = Note.TextNote(
+            id = note.id,
+            title = _uiState.value.title,
+            status = emptyList(),
+            category = Category.DEFAULT,
+            creationDate = note.creationDate,
+            description = _uiState.value.description
+        )
+
+        viewModelScope.launch {
+            runCatching {
+                notesRepository.updateNote(noteToUpdate)
+            }.onSuccess {
+                onSaveNote(NOTE_RESULT_CREATED_OR_UPDATED)
+            }.onFailure {
+                println(">>>>>> DEU RUIM ${it.message}")
+            }
         }
     }
 

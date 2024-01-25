@@ -26,7 +26,8 @@ import br.com.ascence.anotei.ui.theme.AnoteiTheme
 fun NoteHeader(
     noteCategoryColor: Color,
     titleInitialValue: String,
-    onTitleChanged:(String) -> Unit,
+    creationDateValue: String,
+    onTitleChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -58,7 +59,7 @@ fun NoteHeader(
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
-                text = "30 de Outubro",
+                text = creationDateValue,
                 fontSize = AnoteiAppTheme.fontSizes.small,
                 color = AnoteiAppTheme.colors.accentColor
             )
@@ -73,6 +74,7 @@ private fun NoteScreenPreviewLight() {
         NoteHeader(
             noteCategoryColor = AnoteiAppTheme.colors.allChipColor,
             titleInitialValue = "Sem título",
+            creationDateValue = "30 de Outubro",
             onTitleChanged = {}
         )
     }

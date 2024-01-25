@@ -14,5 +14,5 @@ interface NotesRepository {
 
     suspend fun deleteNote(note: NoteEntity)
 
-    suspend fun updateNote(note: NoteEntity)
+    suspend fun updateNote(note: Note)
 }
