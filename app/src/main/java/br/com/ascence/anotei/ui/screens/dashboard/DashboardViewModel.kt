@@ -59,9 +59,10 @@ class DashboardViewModel(
             )
 
             _uiState.update { currentState ->
-                currentState.copy(noteOptions = options)
+                currentState.copy(
+                    noteOptions = options
+                )
             }
-
         }
     }
 

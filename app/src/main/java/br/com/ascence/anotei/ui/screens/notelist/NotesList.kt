@@ -1,6 +1,5 @@
 package br.com.ascence.anotei.ui.screens.notelist
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,9 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import br.com.ascence.anotei.data.mock.notesListMock
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
@@ -20,37 +16,21 @@ import br.com.ascence.anotei.ui.screens.notelist.components.notecard.NoteCard
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
-private const val OUT_OF_RANGE_ID = -1
-
 @Composable
 fun NotesListScreen(
     notesList: List<Note>,
-    onNoteClick: (Note, Boolean) -> Unit,
-    onBackPressed: (Boolean) -> Unit,
+    selectedNoteId: Int,
+    onNoteClick: (Note) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val selectedNote = remember { mutableIntStateOf(OUT_OF_RANGE_ID) }
-    val haveSelectedNote = remember { mutableStateOf(false) }
-
-    BackHandler(
-        enabled = haveSelectedNote.value
-    ) {
-        selectedNote.intValue = OUT_OF_RANGE_ID
-        haveSelectedNote.value = false
-        onBackPressed(haveSelectedNote.value)
-    }
-
     ListContent(
         notes = notesList,
-        selectedId = selectedNote.intValue,
+        selectedId = selectedNoteId,
         onNoteClick = { note ->
-            selectedNote.intValue = note.id
-            haveSelectedNote.value = selectedNote.intValue > OUT_OF_RANGE_ID
-            onNoteClick(note, haveSelectedNote.value)
+            onNoteClick(note)
         },
         modifier = modifier,
     )
-
 }
 
 @Composable
@@ -111,7 +91,7 @@ private fun NotesListPreview() {
     AnoteiTheme {
         ListContent(
             notes = notesListMock,
-            selectedId = OUT_OF_RANGE_ID,
+            selectedId = -1,
             onNoteClick = {}
         )
     }
@@ -123,7 +103,7 @@ private fun NotesListEmptyPreview() {
     AnoteiTheme {
         ListContent(
             notes = emptyList(),
-            selectedId = OUT_OF_RANGE_ID,
+            selectedId = -1,
             onNoteClick = {}
         )
     }
