@@ -66,10 +66,12 @@ class NoteScreenViewModel(
         }
     }
 
-    fun hideContentAlertDialog() {
+    fun hideAlertDialog() {
         _uiState.update { currentState ->
             currentState.copy(
-                showContentAlert = false
+                showContentAlert = false,
+                showEmptyNoteAlert = false,
+                showNoteDiscardAlert = false
             )
         }
     }
@@ -88,19 +90,19 @@ class NoteScreenViewModel(
         }
     }
 
-    fun hideEmptyNoteAlert() {
-        _uiState.update { currentState ->
-            currentState.copy(
-                showEmptyNoteAlert = false
-            )
-        }
-    }
-
     fun handleNote(noteType: NoteType, note: Note?, onSaveNote: (String) -> Unit) {
         handleNoteContent()
 
         if (_uiState.value.showEmptyNoteAlert.not()) {
             saveOrUpdateNote(noteType, note, onSaveNote)
+        }
+    }
+
+    fun showDeleteNoteAlert(){
+        _uiState.update { currentState ->
+            currentState.copy(
+                showNoteDiscardAlert = true
+            )
         }
     }
 

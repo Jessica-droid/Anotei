@@ -26,12 +26,12 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import br.com.ascence.anotei.data.local.AnoteiDatabase
 import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
-import br.com.ascence.anotei.data.preview.mock.noteOptionsPreview
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.extension.getColor
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
 import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsBar
+import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsHelper
 import br.com.ascence.anotei.ui.presentation.NoteOptionsPresentationType
 import br.com.ascence.anotei.ui.screens.note.components.NoteAppBar
 import br.com.ascence.anotei.ui.screens.note.components.NoteHeader
@@ -68,6 +68,15 @@ fun NoteScreenContent(
             state.creationDate
         }
 
+    val noteOptions = NoteOptionsHelper().getOptions(
+        noteType = noteType,
+        note = note,
+        onCategoryClick = { },
+        onScheduleClick = { },
+        onProtectClick = { },
+        onDeleteClick = { viewModel.showDeleteNoteAlert() }
+    )
+
     LaunchedEffect(noteType) {
         when (noteType) {
             NoteType.NEW_NOTE -> {
@@ -96,7 +105,7 @@ fun NoteScreenContent(
         },
         bottomBar = {
             NoteOptionsBar(
-                options = noteOptionsPreview,
+                options = noteOptions,
                 onFABClick = { viewModel.handleNote(noteType, note, onBackPressed) },
                 optionType = NoteOptionsPresentationType.EDIT_MODE
             )
@@ -114,7 +123,7 @@ fun NoteScreenContent(
                     message = "Deseja descartar o que anotou até o momento?",
                     confirmLabel = "Confirmar",
                     dismissLabel = "Cancelar",
-                    onDismiss = { viewModel.hideContentAlertDialog() },
+                    onDismiss = { viewModel.hideAlertDialog() },
                     onConfirm = { onBackPressed(NOTE_RESULT_NOTHING) }
                 )
             }
@@ -124,8 +133,19 @@ fun NoteScreenContent(
                     title = "Um momento!",
                     message = "Anote alguma coisa antes de salvar.",
                     confirmLabel = "Entendi",
-                    onDismiss = { viewModel.hideEmptyNoteAlert() },
-                    onConfirm = { viewModel.hideEmptyNoteAlert() }
+                    onDismiss = { viewModel.hideAlertDialog() },
+                    onConfirm = { viewModel.hideAlertDialog() }
+                )
+            }
+
+            if (state.showNoteDiscardAlert) {
+                SimpleDialog(
+                    title = "Descartar nota",
+                    message = "Deseja realmente descartar esta nota?",
+                    confirmLabel = "Confirmar",
+                    dismissLabel = "Cancelar",
+                    onDismiss = { viewModel.hideAlertDialog() },
+                    onConfirm = { viewModel.hideAlertDialog() }
                 )
             }
 
