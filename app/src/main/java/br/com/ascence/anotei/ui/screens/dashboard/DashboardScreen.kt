@@ -1,5 +1,6 @@
 package br.com.ascence.anotei.ui.screens.dashboard
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -27,6 +28,8 @@ import br.com.ascence.anotei.ui.screens.dashboard.components.DashNoteOptionsBar
 import br.com.ascence.anotei.ui.screens.dashboard.components.NewNoteButton
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
+private const val OUT_OF_RANGE_ID = -1
+
 @Composable
 fun DashboardScreen() {
     val contextCompat = LocalContext.current
@@ -51,11 +54,18 @@ fun DashboardScreen() {
         }
     )
 
+    BackHandler(
+        enabled = state.selectedNote != null
+    ) {
+        viewModel.updateNoteSelection(null)
+        viewModel.updateOptionsVisibility(false)
+    }
+
     LaunchedEffect(key1 = Unit) {
         viewModel.fetchNotes()
     }
 
-    LaunchedEffect(state.selectedNote){
+    LaunchedEffect(state.selectedNote) {
         viewModel.setupNoteOptions()
     }
 
@@ -63,18 +73,18 @@ fun DashboardScreen() {
         notesList = state.notesList,
         showNoteOptions = showNoteOptions,
         options = state.noteOptions,
-        onNoteClick = { note, haveSelectedNote ->
+        selectedNoteId = state.selectedNote?.id ?: OUT_OF_RANGE_ID,
+        onNoteClick = { note ->
             viewModel.updateNoteSelection(note)
-            viewModel.updateOptionsVisibility(showOptions = haveSelectedNote)
-        },
-        onBackPressed = { haveSelectedNote ->
-            viewModel.updateOptionsVisibility(showOptions = haveSelectedNote)
+            viewModel.updateOptionsVisibility(showOptions = true)
         },
         onNewNoteClick = {
             noteScreen.launch(NoteType.NEW_NOTE)
         },
         onAlterNoteClick = {
             noteScreen.launch(NoteType.UPDATE_NOTE)
+            viewModel.updateNoteSelection(null)
+            viewModel.updateOptionsVisibility(showOptions = false)
         }
     )
 }
@@ -84,10 +94,10 @@ private fun DashBoardContent(
     showNoteOptions: Boolean,
     options: List<NoteOption>,
     notesList: List<Note>,
-    onNoteClick: (Note, Boolean) -> Unit,
-    onBackPressed: (Boolean) -> Unit,
+    selectedNoteId: Int,
+    onNoteClick: (Note) -> Unit,
     onNewNoteClick: () -> Unit,
-    onAlterNoteClick: ()-> Unit
+    onAlterNoteClick: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -110,7 +120,7 @@ private fun DashBoardContent(
         NotesListScreen(
             notesList = notesList,
             onNoteClick = onNoteClick,
-            onBackPressed = onBackPressed,
+            selectedNoteId = selectedNoteId,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -126,9 +136,9 @@ fun DashboardPreview() {
             notesList = emptyList(),
             showNoteOptions = false,
             options = emptyList(),
-            onNoteClick = { _, _ -> },
+            selectedNoteId = OUT_OF_RANGE_ID,
+            onNoteClick = { _ -> },
             onNewNoteClick = {},
-            onBackPressed = {},
             onAlterNoteClick = {}
         )
     }
