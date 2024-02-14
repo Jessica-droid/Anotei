@@ -22,7 +22,7 @@ fun Note.toEntity(): NoteEntity =
             type = NoteEntity.NoteEntityType.TEXT,
             title = title,
             description = description,
-            category = NoteEntity.NoteEntityCategory.DEFAULT,
+            category = category.toCategoryEntity(),
             status = mutableListOf(),
             creationDateInMillis = creationDate.time.milliseconds.inWholeMilliseconds
         )
@@ -34,7 +34,7 @@ fun Note.getOptions(
     onCategoryClick: () -> Unit,
     onScheduleClick: () -> Unit,
     onProtectClick: () -> Unit,
-    onDeleteClick:  () -> Unit,
+    onDeleteClick: () -> Unit,
 ): List<NoteOption> = listOf(
     NoteOption.Category(
         action = onCategoryClick,

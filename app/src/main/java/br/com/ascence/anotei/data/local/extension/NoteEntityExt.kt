@@ -31,7 +31,7 @@ fun NoteEntity.toNote(): Note =
 
 fun List<NoteEntity>.toNotesList(): List<Note> = map { entity ->
     entity.toNote()
-}
+}.sortedByDescending { note -> note.creationDate }
 
 fun List<NoteEntityStatus>.toNoteStatusList(): List<NoteStatus> =
     map { entityStatus ->

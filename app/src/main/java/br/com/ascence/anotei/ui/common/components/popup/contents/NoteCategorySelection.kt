@@ -26,6 +26,7 @@ import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 fun NoteCategorySelection(
     expandedStates: MutableTransitionState<Boolean>,
     transformOrigin: TransformOrigin,
+    onCategorySelected: (Category) -> Unit,
 ) {
 
     val transition = updateTransition(expandedStates, "Popup")
@@ -95,7 +96,7 @@ fun NoteCategorySelection(
         ) {
             Category.entries.map { category ->
                 IconButton(
-                    onClick = { println("CATEGORIA: $category") },
+                    onClick = { onCategorySelected(category) },
                 ) {
                     Icon(
                         imageVector = Icons.Default.Brightness1,

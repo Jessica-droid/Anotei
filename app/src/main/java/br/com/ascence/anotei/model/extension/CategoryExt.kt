@@ -2,6 +2,7 @@ package br.com.ascence.anotei.model.extension
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import br.com.ascence.anotei.data.local.entities.NoteEntity
 import br.com.ascence.anotei.model.Category
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 
@@ -17,3 +18,7 @@ fun Category.getColor(): Color =
             Category.YELLOW -> lockColor
         }
     }
+
+fun Category.toCategoryEntity(): NoteEntity.NoteEntityCategory =
+    NoteEntity.NoteEntityCategory.values()
+        .first { entityCategory -> entityCategory.name == this.name }

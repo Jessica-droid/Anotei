@@ -2,6 +2,7 @@ package br.com.ascence.anotei.ui.screens.dashboard
 
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FabPosition
@@ -16,12 +17,15 @@ import androidx.compose.ui.platform.LocalContext
 import br.com.ascence.anotei.data.local.AnoteiDatabase
 import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
+import br.com.ascence.anotei.model.Category
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.navigation.NOTE_RESULT_CREATED_OR_UPDATED
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NewNoteActivityResultContract
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
+import br.com.ascence.anotei.ui.common.components.popup.AppPopup
+import br.com.ascence.anotei.ui.common.components.popup.contents.NoteCategorySelection
 import br.com.ascence.anotei.ui.screens.notelist.NotesListScreen
 import br.com.ascence.anotei.ui.screens.dashboard.components.DashAppBar
 import br.com.ascence.anotei.ui.screens.dashboard.components.DashNoteOptionsBar
@@ -59,6 +63,7 @@ fun DashboardScreen() {
     ) {
         viewModel.updateNoteSelection(null)
         viewModel.updateOptionsVisibility(false)
+        viewModel.updateCategoryPopupVisibility(false)
     }
 
     LaunchedEffect(key1 = Unit) {
@@ -85,7 +90,10 @@ fun DashboardScreen() {
             noteScreen.launch(NoteType.UPDATE_NOTE)
             viewModel.updateNoteSelection(null)
             viewModel.updateOptionsVisibility(showOptions = false)
-        }
+        },
+        showCategoryPopup = state.showCategoryPopup,
+        onNoteCategorySelected = { category -> viewModel.updateSelectedNoteCategory(category) },
+        onDismissCategoryPopup = { viewModel.updateCategoryPopupVisibility(false) }
     )
 }
 
@@ -98,6 +106,9 @@ private fun DashBoardContent(
     onNoteClick: (Note) -> Unit,
     onNewNoteClick: () -> Unit,
     onAlterNoteClick: () -> Unit,
+    showCategoryPopup: Boolean,
+    onNoteCategorySelected: (Category) -> Unit,
+    onDismissCategoryPopup: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -117,14 +128,32 @@ private fun DashBoardContent(
             )
         }
     ) { innerPadding ->
-        NotesListScreen(
-            notesList = notesList,
-            onNoteClick = onNoteClick,
-            selectedNoteId = selectedNoteId,
+        Box(
+            propagateMinConstraints = true,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-        )
+        ) {
+
+            AppPopup(
+                isPopupVisible = showCategoryPopup,
+                onDismissRequest = onDismissCategoryPopup,
+                content = { states, tOrigin ->
+                    NoteCategorySelection(
+                        expandedStates = states,
+                        transformOrigin = tOrigin,
+                        onCategorySelected = { category -> onNoteCategorySelected(category) }
+                    )
+                }
+            )
+
+            NotesListScreen(
+                notesList = notesList,
+                onNoteClick = onNoteClick,
+                selectedNoteId = selectedNoteId,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
 
@@ -139,7 +168,10 @@ fun DashboardPreview() {
             selectedNoteId = OUT_OF_RANGE_ID,
             onNoteClick = { _ -> },
             onNewNoteClick = {},
-            onAlterNoteClick = {}
+            onAlterNoteClick = {},
+            showCategoryPopup = false,
+            onNoteCategorySelected = {},
+            onDismissCategoryPopup = {}
         )
     }
 }
