@@ -14,5 +14,6 @@ fun Category.getColor(): Color =
             Category.PINK -> thirdChipColor
             Category.RED -> fourthColor
             Category.GREEN -> fifithChipColor
+            Category.YELLOW -> lockColor
         }
     }

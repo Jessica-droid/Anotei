@@ -4,6 +4,7 @@ enum class Category {
     DEFAULT,
     PURPLE,
     PINK,
+    YELLOW,
     RED,
     GREEN
 }
