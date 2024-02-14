@@ -16,17 +16,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.unit.DpOffset
 import br.com.ascence.anotei.data.local.AnoteiDatabase
 import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
@@ -35,7 +32,7 @@ import br.com.ascence.anotei.model.extension.getColor
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
 import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsBar
-import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsHelper
+import br.com.ascence.anotei.utils.noteoptions.NoteOptionsHelper
 import br.com.ascence.anotei.ui.common.components.popup.AppPopup
 import br.com.ascence.anotei.ui.common.components.popup.contents.NoteCategorySelection
 import br.com.ascence.anotei.ui.presentation.NoteOptionsPresentationType
@@ -76,7 +73,7 @@ fun NoteScreenContent(
 
     val noteOptions = NoteOptionsHelper().getOptions(
         noteType = noteType,
-        note = note,
+        noteCategory = state.noteCategory,
         onCategoryClick = { viewModel.showCategoryPopup() },
         onScheduleClick = { },
         onProtectClick = { },
@@ -174,7 +171,8 @@ fun NoteScreenContent(
                     content = { states, tOrigin ->
                         NoteCategorySelection(
                             expandedStates = states,
-                            transformOrigin = tOrigin
+                            transformOrigin = tOrigin,
+                            onCategorySelected = { category -> viewModel.updateNoteCategory(category) }
                         )
                     }
                 )

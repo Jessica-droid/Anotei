@@ -115,6 +115,14 @@ class NoteScreenViewModel(
         }
     }
 
+    fun updateNoteCategory(category: Category){
+        _uiState.update { currentState ->
+            currentState.copy(
+                noteCategory = category
+            )
+        }
+    }
+
     private fun saveOrUpdateNote(noteType: NoteType, note: Note?, onSaveNote: (String) -> Unit) {
         when (noteType) {
             NoteType.NEW_NOTE -> createNote(onSaveNote)
@@ -144,7 +152,7 @@ class NoteScreenViewModel(
             id = note.id,
             title = _uiState.value.title,
             status = emptyList(),
-            category = Category.DEFAULT,
+            category = _uiState.value.noteCategory,
             creationDate = note.creationDate,
             description = _uiState.value.description
         )

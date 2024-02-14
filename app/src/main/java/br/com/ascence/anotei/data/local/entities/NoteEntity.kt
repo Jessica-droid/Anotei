@@ -29,6 +29,7 @@ data class NoteEntity(
         DEFAULT,
         PURPLE,
         PINK,
+        YELLOW,
         RED,
         GREEN
     }
