@@ -71,7 +71,8 @@ class NoteScreenViewModel(
             currentState.copy(
                 showContentAlert = false,
                 showEmptyNoteAlert = false,
-                showNoteDiscardAlert = false
+                showNoteDiscardAlert = false,
+                showCategoryPopup = false
             )
         }
     }
@@ -102,6 +103,14 @@ class NoteScreenViewModel(
         _uiState.update { currentState ->
             currentState.copy(
                 showNoteDiscardAlert = true
+            )
+        }
+    }
+
+    fun showCategoryPopup(){
+        _uiState.update { currentState ->
+            currentState.copy(
+                showCategoryPopup = true
             )
         }
     }
@@ -165,18 +174,6 @@ class NoteScreenViewModel(
         _uiState.update { currentState ->
             currentState.copy(
                 showEmptyNoteAlert = currentState.description.trimStart().isEmpty()
-            )
-        }
-    }
-
-    private fun cleanScreenState() {
-        _uiState.update { currentState ->
-            currentState.copy(
-                title = "Sem título",
-                description = "",
-                showEmptyNoteAlert = false,
-                showContentAlert = false,
-                noteCategory = Category.DEFAULT
             )
         }
     }
