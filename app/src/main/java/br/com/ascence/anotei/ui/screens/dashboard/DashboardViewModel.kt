@@ -29,7 +29,8 @@ class DashboardViewModel(
                         notesList = entities,
                         showNoteOptions = false,
                         selectedNote = null,
-                        showCategoryPopup = false
+                        showCategoryPopup = false,
+                        shouldResetListScroll = true
                     )
                 }
             }
