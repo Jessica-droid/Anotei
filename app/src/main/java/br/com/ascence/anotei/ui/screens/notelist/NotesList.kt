@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import br.com.ascence.anotei.data.mock.notesListMock
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
@@ -21,6 +22,7 @@ fun NotesListScreen(
     notesList: List<Note>,
     selectedNoteId: Int,
     onNoteClick: (Note) -> Unit,
+    shouldResetScroll: Boolean,
     modifier: Modifier = Modifier,
 ) {
     ListContent(
@@ -29,6 +31,7 @@ fun NotesListScreen(
         onNoteClick = { note ->
             onNoteClick(note)
         },
+        shouldResetScroll = shouldResetScroll,
         modifier = modifier,
     )
 }
@@ -38,6 +41,7 @@ private fun ListContent(
     notes: List<Note>,
     selectedId: Int,
     onNoteClick: (Note) -> Unit,
+    shouldResetScroll: Boolean,
     modifier: Modifier = Modifier,
 ) {
     if (notes.isNotEmpty()) {
@@ -45,6 +49,7 @@ private fun ListContent(
             notes = notes,
             selectedId = selectedId,
             onNoteClick = onNoteClick,
+            shouldResetScroll = shouldResetScroll,
             modifier = modifier,
         )
     } else {
@@ -61,10 +66,17 @@ private fun Notes(
     notes: List<Note>,
     selectedId: Int,
     onNoteClick: (Note) -> Unit,
+    shouldResetScroll: Boolean,
     modifier: Modifier = Modifier,
 ) {
 
     val listState = rememberLazyListState()
+
+    LaunchedEffect(shouldResetScroll) {
+        if (shouldResetScroll) {
+            listState.scrollToItem(index = 0)
+        }
+    }
 
     LazyColumn(
         state = listState,
@@ -92,7 +104,8 @@ private fun NotesListPreview() {
         ListContent(
             notes = notesListMock,
             selectedId = -1,
-            onNoteClick = {}
+            onNoteClick = {},
+            shouldResetScroll = false
         )
     }
 }
@@ -104,7 +117,8 @@ private fun NotesListEmptyPreview() {
         ListContent(
             notes = emptyList(),
             selectedId = -1,
-            onNoteClick = {}
+            onNoteClick = {},
+            shouldResetScroll = false
         )
     }
 }

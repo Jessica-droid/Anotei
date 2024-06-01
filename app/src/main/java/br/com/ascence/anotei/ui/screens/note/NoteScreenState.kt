@@ -7,7 +7,7 @@ data class NoteScreenState(
     val showEmptyNoteAlert: Boolean = false,
     val showNoteDiscardAlert : Boolean = false,
     val showCategoryPopup: Boolean = false,
-    val title: String = "Sem título",
+    val title: String = "",
     val creationDate: String = "",
     val description: String = "",
     val noteCategory: Category = Category.DEFAULT

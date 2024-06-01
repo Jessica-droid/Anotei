@@ -99,7 +99,7 @@ class NoteScreenViewModel(
         }
     }
 
-    fun showDeleteNoteAlert(){
+    fun showDeleteNoteAlert() {
         _uiState.update { currentState ->
             currentState.copy(
                 showNoteDiscardAlert = true
@@ -107,7 +107,7 @@ class NoteScreenViewModel(
         }
     }
 
-    fun showCategoryPopup(){
+    fun showCategoryPopup() {
         _uiState.update { currentState ->
             currentState.copy(
                 showCategoryPopup = true
@@ -115,7 +115,7 @@ class NoteScreenViewModel(
         }
     }
 
-    fun updateNoteCategory(category: Category){
+    fun updateNoteCategory(category: Category) {
         _uiState.update { currentState ->
             currentState.copy(
                 noteCategory = category
@@ -150,7 +150,7 @@ class NoteScreenViewModel(
 
         val noteToUpdate = Note.TextNote(
             id = note.id,
-            title = _uiState.value.title,
+            title = setupNoteTitle(_uiState.value.title),
             status = emptyList(),
             category = _uiState.value.noteCategory,
             creationDate = note.creationDate,
@@ -171,12 +171,13 @@ class NoteScreenViewModel(
     private fun newTextNoteSetup(): Note =
         Note.TextNote(
             id = NEW_NOTE_ID,
-            title = _uiState.value.title,
+            title = setupNoteTitle(_uiState.value.title),
             status = emptyList(), // TODO setup note status
             category = _uiState.value.noteCategory,
             creationDate = Date(),
             description = _uiState.value.description
         )
+
 
     private fun handleNoteContent() {
         _uiState.update { currentState ->
@@ -186,8 +187,14 @@ class NoteScreenViewModel(
         }
     }
 
-    private companion object {
+    private fun setupNoteTitle(currentTitle: String) =
+        currentTitle.ifBlank {
+            NOTE_DEFAULT_TITLE
+        }
+
+    companion object {
+        const val NOTE_DEFAULT_TITLE = "Sem título"
         const val TITLE_MAX_LENGTH = 40
-        const val NEW_NOTE_ID = 0
+        private const val NEW_NOTE_ID = 0
     }
 }

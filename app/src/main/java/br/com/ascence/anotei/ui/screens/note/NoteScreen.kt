@@ -36,6 +36,7 @@ import br.com.ascence.anotei.utils.noteoptions.NoteOptionsHelper
 import br.com.ascence.anotei.ui.common.components.popup.AppPopup
 import br.com.ascence.anotei.ui.common.components.popup.contents.NoteCategorySelection
 import br.com.ascence.anotei.ui.presentation.NoteOptionsPresentationType
+import br.com.ascence.anotei.ui.screens.note.NoteScreenViewModel.Companion.TITLE_MAX_LENGTH
 import br.com.ascence.anotei.ui.screens.note.components.NoteAppBar
 import br.com.ascence.anotei.ui.screens.note.components.NoteHeader
 import br.com.ascence.anotei.ui.screens.note.dialogs.SimpleDialog
@@ -64,8 +65,12 @@ fun NoteScreenContent(
 
     val state by viewModel.screenState.collectAsState()
 
+    val isNewNote = remember {
+        isNewNote(noteType)
+    }
+
     val noteCreationDate =
-        if (noteType == NoteType.NEW_NOTE) {
+        if (isNewNote) {
             DateHelper().formatDateToString(Date())
         } else {
             state.creationDate
@@ -160,6 +165,9 @@ fun NoteScreenContent(
                 onTitleChanged = { newTitle ->
                     viewModel.onTitleUpdate(newTitle)
                 },
+                isNewNote = isNewNote,
+                titleMaxLength = TITLE_MAX_LENGTH.toString(),
+                onTitleDone = { focusRequester.requestFocus() },
                 modifier = Modifier.padding(horizontal = AnoteiAppTheme.spaces.medium)
             )
 
@@ -197,6 +205,8 @@ fun NoteScreenContent(
         }
     }
 }
+
+private fun isNewNote(noteType: NoteType) = noteType == NoteType.NEW_NOTE
 
 @ColorSchemePreviews
 @Composable

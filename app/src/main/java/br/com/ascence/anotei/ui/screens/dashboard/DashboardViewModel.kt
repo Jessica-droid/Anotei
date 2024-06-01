@@ -21,6 +21,7 @@ class DashboardViewModel(
     val uiState: StateFlow<DashBoardState> = _uiState.asStateFlow()
 
     fun fetchNotes() {
+        updateListScrollState(shouldReset = true)
         viewModelScope.launch {
             notesRepository.getAllNotesStream().collect { entities ->
                 _uiState.update { currentState ->
@@ -33,6 +34,7 @@ class DashboardViewModel(
                 }
             }
         }
+        updateListScrollState(shouldReset = false)
     }
 
     fun updateNoteSelection(note: Note?) {
@@ -86,6 +88,14 @@ class DashboardViewModel(
                     noteOptions = options
                 )
             }
+        }
+    }
+
+    private fun updateListScrollState(shouldReset: Boolean){
+        _uiState.update { currentState ->
+            currentState.copy(
+                shouldResetListScroll = shouldReset
+            )
         }
     }
 
