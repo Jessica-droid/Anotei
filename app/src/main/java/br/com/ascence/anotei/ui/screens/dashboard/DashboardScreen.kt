@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import br.com.ascence.anotei.data.local.AnoteiDatabase
 import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
+import br.com.ascence.anotei.data.mock.notesListMock
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.Category
 import br.com.ascence.anotei.model.Note
@@ -93,7 +94,8 @@ fun DashboardScreen() {
         },
         showCategoryPopup = state.showCategoryPopup,
         onNoteCategorySelected = { category -> viewModel.updateSelectedNoteCategory(category) },
-        onDismissCategoryPopup = { viewModel.updateCategoryPopupVisibility(false) }
+        onDismissCategoryPopup = { viewModel.updateCategoryPopupVisibility(false) },
+        shouldResetListScroll = state.shouldResetListScroll
     )
 }
 
@@ -109,6 +111,7 @@ private fun DashBoardContent(
     showCategoryPopup: Boolean,
     onNoteCategorySelected: (Category) -> Unit,
     onDismissCategoryPopup: () -> Unit,
+    shouldResetListScroll: Boolean,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -151,6 +154,7 @@ private fun DashBoardContent(
                 notesList = notesList,
                 onNoteClick = onNoteClick,
                 selectedNoteId = selectedNoteId,
+                shouldResetScroll = shouldResetListScroll,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -162,6 +166,26 @@ private fun DashBoardContent(
 fun DashboardPreview() {
     AnoteiTheme {
         DashBoardContent(
+            notesList = notesListMock,
+            showNoteOptions = false,
+            options = emptyList(),
+            selectedNoteId = OUT_OF_RANGE_ID,
+            onNoteClick = { _ -> },
+            onNewNoteClick = {},
+            onAlterNoteClick = {},
+            showCategoryPopup = false,
+            onNoteCategorySelected = {},
+            onDismissCategoryPopup = {},
+            shouldResetListScroll = false
+        )
+    }
+}
+
+@ColorSchemePreviews
+@Composable
+fun DashboardEmptyStatePreview() {
+    AnoteiTheme {
+        DashBoardContent(
             notesList = emptyList(),
             showNoteOptions = false,
             options = emptyList(),
@@ -171,7 +195,8 @@ fun DashboardPreview() {
             onAlterNoteClick = {},
             showCategoryPopup = false,
             onNoteCategorySelected = {},
-            onDismissCategoryPopup = {}
+            onDismissCategoryPopup = {},
+            shouldResetListScroll = false
         )
     }
 }

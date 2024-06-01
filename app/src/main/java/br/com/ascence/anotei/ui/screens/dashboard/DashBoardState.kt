@@ -9,4 +9,5 @@ data class DashBoardState(
     val showNoteOptions: Boolean = false,
     val selectedNote: Note? = null,
     val showCategoryPopup: Boolean = false,
+    val shouldResetListScroll: Boolean = false,
 )
