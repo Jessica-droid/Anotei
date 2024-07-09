@@ -15,16 +15,12 @@ sealed class NoteOption {
     abstract val iconColor: @Composable () -> Color
     abstract val optionContentDescription: String
     abstract val checkContentDescription: String?
-    abstract val showBadge: Boolean
-    abstract val action: () -> Unit
 
     class Category(
         override val icon: ImageVector = Icons.Default.Brightness1,
         override val iconColor: @Composable () -> Color = { AnoteiAppTheme.colors.menuColor },
         override val optionContentDescription: String = "Selecionar categoria da nota",
         override val checkContentDescription: String? = null,
-        override val showBadge: Boolean = false,
-        override val action: () -> Unit,
     ) : NoteOption()
 
     class Schedule(
@@ -32,8 +28,6 @@ sealed class NoteOption {
         override val iconColor: @Composable () -> Color = { AnoteiAppTheme.colors.menuColor },
         override val optionContentDescription: String = "Agendar nota",
         override val checkContentDescription: String? = "Esta nota está agendada",
-        override val showBadge: Boolean = false,
-        override val action: () -> Unit,
     ) : NoteOption()
 
     class Protect(
@@ -41,8 +35,6 @@ sealed class NoteOption {
         override val iconColor: @Composable () -> Color = { AnoteiAppTheme.colors.menuColor },
         override val optionContentDescription: String = "Proteger nota",
         override val checkContentDescription: String? = "Esta nota está protegida por senha",
-        override val showBadge: Boolean = false,
-        override val action: () -> Unit,
     ) : NoteOption()
 
     class Delete(
@@ -50,7 +42,5 @@ sealed class NoteOption {
         override val iconColor: @Composable () -> Color = { AnoteiAppTheme.colors.menuColor },
         override val optionContentDescription: String = "Apagar nota",
         override val checkContentDescription: String? = null,
-        override val showBadge: Boolean = false,
-        override val action: () -> Unit,
     ) : NoteOption()
 }
