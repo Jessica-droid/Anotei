@@ -7,13 +7,8 @@ import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 
 val noteOptionsPreview = listOf(
     Category(
-        action = {},
         iconColor = { AnoteiAppTheme.colors.allChipColor }
     ),
-    Schedule(
-        action = {}
-    ),
-    Protect(
-        action = {}
-    ),
+    Schedule(),
+    Protect(),
 )

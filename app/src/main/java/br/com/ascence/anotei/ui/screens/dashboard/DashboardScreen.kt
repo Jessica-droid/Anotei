@@ -20,7 +20,6 @@ import br.com.ascence.anotei.data.mock.notesListMock
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.Category
 import br.com.ascence.anotei.model.Note
-import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.navigation.NOTE_RESULT_CREATED_OR_UPDATED
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NewNoteActivityResultContract
@@ -32,8 +31,6 @@ import br.com.ascence.anotei.ui.screens.dashboard.components.DashAppBar
 import br.com.ascence.anotei.ui.screens.dashboard.components.DashNoteOptionsBar
 import br.com.ascence.anotei.ui.screens.dashboard.components.NewNoteButton
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
-
-private const val OUT_OF_RANGE_ID = -1
 
 @Composable
 fun DashboardScreen() {
@@ -47,10 +44,11 @@ fun DashboardScreen() {
     }
 
     val state by viewModel.uiState.collectAsState()
-    val showNoteOptions = state.showNoteOptions
 
     val noteScreen = rememberLauncherForActivityResult(
-        contract = NewNoteActivityResultContract(note = state.selectedNote as? Note.TextNote),
+        contract = NewNoteActivityResultContract(
+            note = state.selectedNoteList.firstOrNull() as? Note.TextNote
+        ),
         onResult = { result ->
             when (result) {
                 NOTE_RESULT_CREATED_OR_UPDATED -> viewModel.fetchNotes()
@@ -60,29 +58,29 @@ fun DashboardScreen() {
     )
 
     BackHandler(
-        enabled = state.selectedNote != null
+        enabled = state.selectedNoteList.isNotEmpty()
     ) {
         viewModel.updateNoteSelection(null)
         viewModel.updateOptionsVisibility(false)
         viewModel.updateCategoryPopupVisibility(false)
+        viewModel.toggleSelectionMode(false)
     }
 
     LaunchedEffect(key1 = Unit) {
         viewModel.fetchNotes()
     }
 
-    LaunchedEffect(state.selectedNote) {
-        viewModel.setupNoteOptions()
-    }
-
     DashBoardContent(
         notesList = state.notesList,
-        showNoteOptions = showNoteOptions,
-        options = state.noteOptions,
-        selectedNoteId = state.selectedNote?.id ?: OUT_OF_RANGE_ID,
+        showNoteOptions = state.showNoteOptions,
+        selectedNoteList = state.selectedNoteList,
+        isNoteSelectionActivated = state.isSelectionModeActivated,
         onNoteClick = { note ->
             viewModel.updateNoteSelection(note)
-            viewModel.updateOptionsVisibility(showOptions = true)
+        },
+        onNoteSelection = { note ->
+            viewModel.updateNoteSelection(note)
+            viewModel.toggleSelectionMode(true)
         },
         onNewNoteClick = {
             noteScreen.launch(NoteType.NEW_NOTE)
@@ -93,7 +91,9 @@ fun DashboardScreen() {
             viewModel.updateOptionsVisibility(showOptions = false)
         },
         showCategoryPopup = state.showCategoryPopup,
-        onNoteCategorySelected = { category -> viewModel.updateSelectedNoteCategory(category) },
+        onNoteCategorySelected = {
+            // category -> viewModel.updateSelectedNoteCategory(category)
+        },
         onDismissCategoryPopup = { viewModel.updateCategoryPopupVisibility(false) },
         shouldResetListScroll = state.shouldResetListScroll
     )
@@ -102,10 +102,11 @@ fun DashboardScreen() {
 @Composable
 private fun DashBoardContent(
     showNoteOptions: Boolean,
-    options: List<NoteOption>,
+    isNoteSelectionActivated: Boolean,
     notesList: List<Note>,
-    selectedNoteId: Int,
+    selectedNoteList: List<Note>,
     onNoteClick: (Note) -> Unit,
+    onNoteSelection: (Note) -> Unit,
     onNewNoteClick: () -> Unit,
     onAlterNoteClick: () -> Unit,
     showCategoryPopup: Boolean,
@@ -126,7 +127,8 @@ private fun DashBoardContent(
         bottomBar = {
             DashNoteOptionsBar(
                 showBottomBar = showNoteOptions,
-                options = options,
+                isSelectionModeActivated = isNoteSelectionActivated,
+                selectedNotes = selectedNoteList,
                 onFABClick = onAlterNoteClick
             )
         }
@@ -153,7 +155,8 @@ private fun DashBoardContent(
             NotesListScreen(
                 notesList = notesList,
                 onNoteClick = onNoteClick,
-                selectedNoteId = selectedNoteId,
+                onNoteSelection = onNoteSelection,
+                selectedNotesList = selectedNoteList,
                 shouldResetScroll = shouldResetListScroll,
                 modifier = Modifier.fillMaxSize()
             )
@@ -168,9 +171,10 @@ fun DashboardPreview() {
         DashBoardContent(
             notesList = notesListMock,
             showNoteOptions = false,
-            options = emptyList(),
-            selectedNoteId = OUT_OF_RANGE_ID,
+            isNoteSelectionActivated = false,
+            selectedNoteList = emptyList(),
             onNoteClick = { _ -> },
+            onNoteSelection = { _ -> },
             onNewNoteClick = {},
             onAlterNoteClick = {},
             showCategoryPopup = false,
@@ -188,9 +192,10 @@ fun DashboardEmptyStatePreview() {
         DashBoardContent(
             notesList = emptyList(),
             showNoteOptions = false,
-            options = emptyList(),
-            selectedNoteId = OUT_OF_RANGE_ID,
+            isNoteSelectionActivated = false,
+            selectedNoteList = emptyList(),
             onNoteClick = { _ -> },
+            onNoteSelection = { _ -> },
             onNewNoteClick = {},
             onAlterNoteClick = {},
             showCategoryPopup = false,

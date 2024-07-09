@@ -31,11 +31,10 @@ import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.extension.getColor
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
-import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsBar
-import br.com.ascence.anotei.utils.noteoptions.NoteOptionsHelper
+import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsWidget
+import br.com.ascence.anotei.ui.common.components.noteoptions.presentation.NoteOptionsMode
 import br.com.ascence.anotei.ui.common.components.popup.AppPopup
 import br.com.ascence.anotei.ui.common.components.popup.contents.NoteCategorySelection
-import br.com.ascence.anotei.ui.presentation.NoteOptionsPresentationType
 import br.com.ascence.anotei.ui.screens.note.NoteScreenViewModel.Companion.TITLE_MAX_LENGTH
 import br.com.ascence.anotei.ui.screens.note.components.NoteAppBar
 import br.com.ascence.anotei.ui.screens.note.components.NoteHeader
@@ -76,14 +75,15 @@ fun NoteScreenContent(
             state.creationDate
         }
 
-    val noteOptions = NoteOptionsHelper().getOptions(
-        noteType = noteType,
-        noteCategory = state.noteCategory,
-        onCategoryClick = { viewModel.showCategoryPopup() },
-        onScheduleClick = { },
-        onProtectClick = { },
-        onDeleteClick = { viewModel.showDeleteNoteAlert() }
-    )
+    // TODO update to use new options helper
+//    val noteOptions = NoteOptionsHelper().getOptions(
+//        noteType = noteType,
+//        noteCategory = state.noteCategory,
+//        onCategoryClick = { viewModel.showCategoryPopup() },
+//        onScheduleClick = { },
+//        onProtectClick = { },
+//        onDeleteClick = { viewModel.showDeleteNoteAlert() }
+//    )
 
     LaunchedEffect(noteType) {
         when (noteType) {
@@ -112,10 +112,11 @@ fun NoteScreenContent(
             }
         },
         bottomBar = {
-            NoteOptionsBar(
-                options = noteOptions,
-                onFABClick = { viewModel.handleNote(noteType, note, onBackPressed) },
-                optionType = NoteOptionsPresentationType.EDIT_MODE
+            NoteOptionsWidget(
+                mode = NoteOptionsMode.EDIT_MODE,
+                selectedNotes = listOfNotNull(note),
+                isSelectionModeActivated = false,
+                onFABClick = {}
             )
         }
     ) { innerPadding ->

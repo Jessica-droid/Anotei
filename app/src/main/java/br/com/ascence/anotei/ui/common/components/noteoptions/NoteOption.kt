@@ -1,6 +1,8 @@
 package br.com.ascence.anotei.ui.common.components.noteoptions
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -10,15 +12,26 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.NoteOption
+import br.com.ascence.anotei.ui.common.components.noteoptions.preview.NoteOptionPreviewParams
+import br.com.ascence.anotei.ui.common.components.noteoptions.preview.NoteOptionPreviewProvider
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
+import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
 @Composable
-fun NoteOption(option: NoteOption) {
+fun NoteOption(
+    option: NoteOption,
+    showCheckBadge: Boolean,
+    onClick: (NoteOption) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Box(
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
+        modifier = modifier
     ) {
-        IconButton(onClick = option.action) {
+        IconButton(onClick = { onClick(option) }) {
             Icon(
                 imageVector = option.icon,
                 contentDescription = option.optionContentDescription,
@@ -26,7 +39,7 @@ fun NoteOption(option: NoteOption) {
             )
         }
         option.checkContentDescription?.let {
-            if (option.showBadge) {
+            if (showCheckBadge) {
                 Icon(
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = option.checkContentDescription,
@@ -40,6 +53,24 @@ fun NoteOption(option: NoteOption) {
                         .align(Alignment.BottomEnd)
                 )
             }
+        }
+    }
+}
+
+@ColorSchemePreviews
+@Composable
+private fun NoteOptionPreview(
+    @PreviewParameter(NoteOptionPreviewProvider::class) params: NoteOptionPreviewParams
+){
+    AnoteiTheme {
+        Column(
+            modifier = Modifier.background(AnoteiAppTheme.colors.colorScheme.background)
+        ) {
+            NoteOption(
+                option = params.option,
+                showCheckBadge = params.showBadge,
+                onClick = {},
+            )
         }
     }
 }

@@ -20,18 +20,18 @@ import br.com.ascence.anotei.ui.theme.AnoteiTheme
 @Composable
 fun NotesListScreen(
     notesList: List<Note>,
-    selectedNoteId: Int,
+    selectedNotesList: List<Note>,
     onNoteClick: (Note) -> Unit,
+    onNoteSelection: (Note) -> Unit,
     shouldResetScroll: Boolean,
     modifier: Modifier = Modifier,
 ) {
     ListContent(
         notes = notesList,
-        selectedId = selectedNoteId,
-        onNoteClick = { note ->
-            onNoteClick(note)
-        },
+        selectedNotesList = selectedNotesList,
         shouldResetScroll = shouldResetScroll,
+        onNoteClick = { note -> onNoteClick(note) },
+        onNoteSelection = { note -> onNoteSelection(note) },
         modifier = modifier,
     )
 }
@@ -39,16 +39,18 @@ fun NotesListScreen(
 @Composable
 private fun ListContent(
     notes: List<Note>,
-    selectedId: Int,
+    selectedNotesList: List<Note>,
     onNoteClick: (Note) -> Unit,
+    onNoteSelection: (Note) -> Unit,
     shouldResetScroll: Boolean,
     modifier: Modifier = Modifier,
 ) {
     if (notes.isNotEmpty()) {
         Notes(
             notes = notes,
-            selectedId = selectedId,
             onNoteClick = onNoteClick,
+            onNoteSelection = onNoteSelection,
+            selectedNotesList = selectedNotesList,
             shouldResetScroll = shouldResetScroll,
             modifier = modifier,
         )
@@ -64,8 +66,9 @@ private fun ListContent(
 @Composable
 private fun Notes(
     notes: List<Note>,
-    selectedId: Int,
+    selectedNotesList: List<Note>,
     onNoteClick: (Note) -> Unit,
+    onNoteSelection: (Note) -> Unit,
     shouldResetScroll: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -90,7 +93,8 @@ private fun Notes(
             NoteCard(
                 note = note,
                 onCardClick = onNoteClick,
-                isCardSelected = note.id == selectedId,
+                onCardSelection = onNoteSelection,
+                isCardSelected = selectedNotesList.any { it.id == note.id },
                 modifier = Modifier.padding(horizontal = AnoteiAppTheme.spaces.medium)
             )
         }
@@ -103,8 +107,9 @@ private fun NotesListPreview() {
     AnoteiTheme {
         ListContent(
             notes = notesListMock,
-            selectedId = -1,
+            selectedNotesList = emptyList(),
             onNoteClick = {},
+            onNoteSelection = {},
             shouldResetScroll = false
         )
     }
@@ -116,8 +121,9 @@ private fun NotesListEmptyPreview() {
     AnoteiTheme {
         ListContent(
             notes = emptyList(),
-            selectedId = -1,
+            selectedNotesList = emptyList(),
             onNoteClick = {},
+            onNoteSelection = {},
             shouldResetScroll = false
         )
     }

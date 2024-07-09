@@ -1,6 +1,8 @@
 package br.com.ascence.anotei.ui.screens.notelist.components.notecard
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -29,6 +31,7 @@ fun NoteCard(
     note: Note,
     isCardSelected: Boolean,
     onCardClick: (Note) -> Unit,
+    onCardSelection: (Note) -> Unit,
     modifier: Modifier = Modifier,
 ) {
 
@@ -39,16 +42,19 @@ fun NoteCard(
         isCardSelected = isCardSelected,
         statusPresentation = statusPresentation,
         onCardClick = onCardClick,
+        onCardSelection = onCardSelection,
         modifier = modifier
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun CardContent(
     note: Note,
     isCardSelected: Boolean,
     statusPresentation: List<NoteStatusPresentation>,
     onCardClick: (Note) -> Unit,
+    onCardSelection: (Note) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val contentMaxLines =
@@ -64,9 +70,11 @@ private fun CardContent(
             .animateContentSize()
             .selectable(
                 selected = isCardSelected,
-                onClick = {
-                    onCardClick(note)
-                }
+                onClick = {}
+            )
+            .combinedClickable(
+                onClick = { onCardClick(note) },
+                onLongClick = { onCardSelection(note) }
             )
     ) {
         Column(
@@ -106,7 +114,8 @@ private fun NoteCardPreview() {
                 NoteStatusPresentation.SCHEDULED,
                 NoteStatusPresentation.PROTECTED
             ),
-            onCardClick = {}
+            onCardClick = {},
+            onCardSelection = {}
         )
     }
 }
