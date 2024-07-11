@@ -20,6 +20,7 @@ import br.com.ascence.anotei.data.mock.notesListMock
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.Category
 import br.com.ascence.anotei.model.Note
+import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.navigation.NOTE_RESULT_CREATED_OR_UPDATED
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NewNoteActivityResultContract
@@ -88,11 +89,12 @@ fun DashboardScreen() {
             viewModel.updateOptionsVisibility(showOptions = false)
         },
         showCategoryPopup = state.showCategoryPopup,
-        onNoteCategorySelected = {
-            // category -> viewModel.updateSelectedNoteCategory(category)
+        onNoteCategorySelected = { category ->
+            viewModel.updateSelectedNoteCategory(category)
         },
         onDismissCategoryPopup = { viewModel.updateCategoryPopupVisibility(false) },
-        shouldResetListScroll = state.shouldResetListScroll
+        shouldResetListScroll = state.shouldResetListScroll,
+        onNoteOptionsClick = { option -> viewModel.handleNoteOptionClick(option) }
     )
 }
 
@@ -104,6 +106,7 @@ private fun DashBoardContent(
     selectedNoteList: List<Note>,
     onNoteClick: (Note) -> Unit,
     onNoteSelection: (Note) -> Unit,
+    onNoteOptionsClick: (NoteOption) -> Unit,
     onNewNoteClick: () -> Unit,
     onAlterNoteClick: () -> Unit,
     showCategoryPopup: Boolean,
@@ -126,7 +129,8 @@ private fun DashBoardContent(
                 showBottomBar = showNoteOptions,
                 isSelectionModeActivated = isNoteSelectionActivated,
                 selectedNotes = selectedNoteList,
-                onFABClick = onAlterNoteClick
+                onFABClick = onAlterNoteClick,
+                onOptionClick = onNoteOptionsClick
             )
         }
     ) { innerPadding ->
@@ -178,7 +182,8 @@ fun DashboardPreview() {
             showCategoryPopup = false,
             onNoteCategorySelected = {},
             onDismissCategoryPopup = {},
-            shouldResetListScroll = false
+            shouldResetListScroll = false,
+            onNoteOptionsClick = {}
         )
     }
 }
@@ -199,7 +204,8 @@ fun DashboardEmptyStatePreview() {
             showCategoryPopup = false,
             onNoteCategorySelected = {},
             onDismissCategoryPopup = {},
-            shouldResetListScroll = false
+            shouldResetListScroll = false,
+            onNoteOptionsClick = {}
         )
     }
 }

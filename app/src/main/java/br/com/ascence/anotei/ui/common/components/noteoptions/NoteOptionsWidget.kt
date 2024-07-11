@@ -15,6 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.Note
+import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.utils.noteoptions.NoteOptionsHandler
 import br.com.ascence.anotei.ui.common.components.noteoptions.presentation.NoteOptionsMode
 import br.com.ascence.anotei.ui.common.components.noteoptions.preview.NoteOptionsPreviewParams
@@ -28,6 +29,7 @@ internal fun NoteOptionsWidget(
     selectedNotes: List<Note>,
     isSelectionModeActivated: Boolean,
     onFABClick: () -> Unit,
+    onOptionClick: (NoteOption) -> Unit,
 ) {
 
     BottomAppBar(
@@ -42,7 +44,7 @@ internal fun NoteOptionsWidget(
                     NoteOption(
                         option = it,
                         showCheckBadge = false,
-                        onClick = { option -> println(">>>>>>>>> $option") } // TODO setup action
+                        onClick = { option -> onOptionClick(option) }
                     )
                 }
 
@@ -107,7 +109,8 @@ private fun NoteOptionsPreview(
             mode = mode.mode,
             selectedNotes = mode.selectedNotesCount,
             isSelectionModeActivated = mode.selectionModeActivated,
-            onFABClick = {}
+            onFABClick = {},
+            onOptionClick = {}
         )
     }
 }

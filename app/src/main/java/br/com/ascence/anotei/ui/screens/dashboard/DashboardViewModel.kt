@@ -3,7 +3,9 @@ package br.com.ascence.anotei.ui.screens.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.ascence.anotei.data.local.repositories.NotesRepository
+import br.com.ascence.anotei.model.Category
 import br.com.ascence.anotei.model.Note
+import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.model.extension.toEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -55,18 +57,23 @@ class DashboardViewModel(
         } ?: resetSelectionList()
     }
 
-    // TODO refact this action to multi selection
-//    fun updateSelectedNoteCategory(category: Category) {
-//
-//        _uiState.update { currentState ->
-//            currentState.copy(selectedNote = currentState.selectedNote?.apply {
-//                this.category = category
-//            })
-//        }
-//        _uiState.value.selectedNote?.let { note ->
-//            updateNote(note = note)
-//        }
-//    }
+    fun updateSelectedNoteCategory(category: Category) {
+
+        val selectedNote = _uiState.value.selectedNoteList.firstOrNull()
+
+        selectedNote?.let {
+            if (_uiState.value.isSelectionModeActivated) {
+                // TODO setup category update for lists
+            } else {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        selectedNoteList = listOfNotNull(it.apply { this.category = category })
+                    )
+                }
+                updateNote(note = selectedNote)
+            }
+        }
+    }
 
     fun updateOptionsVisibility(showOptions: Boolean) {
         _uiState.update { currentState ->
@@ -82,7 +89,7 @@ class DashboardViewModel(
         }
     }
 
-    fun resetScreenState(){
+    fun resetScreenState() {
         _uiState.update { currentState ->
             currentState.copy(
                 selectedNoteList = emptyList(),
@@ -93,28 +100,24 @@ class DashboardViewModel(
         }
     }
 
-    // TODO refact this action to multi selection
-//    fun setupNoteOptions() {
-//        val selectedNote = _uiState.value.selectedNoteList
-//
-//        if (selectedNote.isNotEmpty()) {
-//
-//            val options = selectedNote.getOptions(
-//                onCategoryClick = {
-//                    updateCategoryPopupVisibility(true)
-//                },
-//                onScheduleClick = {}, // TODO setup scheduling
-//                onProtectClick = {}, // TODO setup note protection
-//                onDeleteClick = { deleteNote(selectedNote) }
-//            )
-//
-//            _uiState.update { currentState ->
-//                currentState.copy(
-//                    noteOptions = options
-//                )
-//            }
-//        }
-//    }
+    fun handleNoteOptionClick(option: NoteOption) {
+        val isSelectionModeActivated = _uiState.value.isSelectionModeActivated
+
+        when (option) {
+            is NoteOption.Category -> updateCategoryPopupVisibility(true)
+            is NoteOption.Delete -> {
+                if (isSelectionModeActivated) {
+                    // TODO setup note deletion for lists
+                } else {
+                    val selectedNote = _uiState.value.selectedNoteList.firstOrNull()
+                    selectedNote?.let { deleteNote(it) }
+                }
+            }
+
+            is NoteOption.Protect -> TODO()
+            is NoteOption.Schedule -> TODO()
+        }
+    }
 
     private fun handleSimpleNoteSelection(note: Note) {
         _uiState.update { currentState ->

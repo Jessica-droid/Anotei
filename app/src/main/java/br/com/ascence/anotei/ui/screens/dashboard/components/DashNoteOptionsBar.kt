@@ -7,6 +7,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import br.com.ascence.anotei.model.Note
+import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsWidget
 import br.com.ascence.anotei.ui.common.components.noteoptions.presentation.NoteOptionsMode
 
@@ -16,6 +17,7 @@ fun DashNoteOptionsBar(
     isSelectionModeActivated: Boolean,
     selectedNotes: List<Note>,
     onFABClick: () -> Unit,
+    onOptionClick: (NoteOption) -> Unit
 ) {
     AnimatedVisibility(
         visible = showBottomBar,
@@ -32,7 +34,8 @@ fun DashNoteOptionsBar(
             mode = NoteOptionsMode.PREVIEW_MODE,
             selectedNotes = selectedNotes,
             isSelectionModeActivated = isSelectionModeActivated,
-            onFABClick = onFABClick
+            onFABClick = onFABClick,
+            onOptionClick = onOptionClick
         )
     }
 }
