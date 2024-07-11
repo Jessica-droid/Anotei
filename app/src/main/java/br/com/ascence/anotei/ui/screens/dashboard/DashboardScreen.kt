@@ -60,10 +60,7 @@ fun DashboardScreen() {
     BackHandler(
         enabled = state.selectedNoteList.isNotEmpty()
     ) {
-        viewModel.updateNoteSelection(null)
-        viewModel.updateOptionsVisibility(false)
-        viewModel.updateCategoryPopupVisibility(false)
-        viewModel.toggleSelectionMode(false)
+        viewModel.resetScreenState()
     }
 
     LaunchedEffect(key1 = Unit) {
@@ -158,6 +155,7 @@ private fun DashBoardContent(
                 onNoteSelection = onNoteSelection,
                 selectedNotesList = selectedNoteList,
                 shouldResetScroll = shouldResetListScroll,
+                canExpandCard = isNoteSelectionActivated.not(),
                 modifier = Modifier.fillMaxSize()
             )
         }
