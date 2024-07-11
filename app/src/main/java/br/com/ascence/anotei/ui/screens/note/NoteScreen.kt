@@ -116,7 +116,8 @@ fun NoteScreenContent(
                 mode = NoteOptionsMode.EDIT_MODE,
                 selectedNotes = listOfNotNull(note),
                 isSelectionModeActivated = false,
-                onFABClick = {}
+                onFABClick = {},
+                onOptionClick = {noteOption ->  }
             )
         }
     ) { innerPadding ->
