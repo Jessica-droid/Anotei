@@ -30,6 +30,7 @@ private const val UNSELECTED_CARD_CONTENT_MAX_LINES = 3
 fun NoteCard(
     note: Note,
     isCardSelected: Boolean,
+    shouldExpandCard: Boolean,
     onCardClick: (Note) -> Unit,
     onCardSelection: (Note) -> Unit,
     modifier: Modifier = Modifier,
@@ -40,6 +41,7 @@ fun NoteCard(
     CardContent(
         note = note,
         isCardSelected = isCardSelected,
+        shouldExpandCard = shouldExpandCard,
         statusPresentation = statusPresentation,
         onCardClick = onCardClick,
         onCardSelection = onCardSelection,
@@ -52,13 +54,14 @@ fun NoteCard(
 private fun CardContent(
     note: Note,
     isCardSelected: Boolean,
+    shouldExpandCard: Boolean,
     statusPresentation: List<NoteStatusPresentation>,
     onCardClick: (Note) -> Unit,
     onCardSelection: (Note) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val contentMaxLines =
-        if (isCardSelected) Int.MAX_VALUE else UNSELECTED_CARD_CONTENT_MAX_LINES
+        if (isCardSelected && shouldExpandCard) Int.MAX_VALUE else UNSELECTED_CARD_CONTENT_MAX_LINES
     val cardBackgroundColor = if (isCardSelected) AnoteiAppTheme.colors.selectedNoteColor
     else AnoteiAppTheme.colors.secondaryBackgroundColor
 
@@ -110,6 +113,7 @@ private fun NoteCardPreview() {
         CardContent(
             note = fakeTextNote,
             isCardSelected = false,
+            shouldExpandCard = false,
             statusPresentation = listOf(
                 NoteStatusPresentation.SCHEDULED,
                 NoteStatusPresentation.PROTECTED

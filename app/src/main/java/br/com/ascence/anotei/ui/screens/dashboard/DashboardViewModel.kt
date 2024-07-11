@@ -55,6 +55,67 @@ class DashboardViewModel(
         } ?: resetSelectionList()
     }
 
+    // TODO refact this action to multi selection
+//    fun updateSelectedNoteCategory(category: Category) {
+//
+//        _uiState.update { currentState ->
+//            currentState.copy(selectedNote = currentState.selectedNote?.apply {
+//                this.category = category
+//            })
+//        }
+//        _uiState.value.selectedNote?.let { note ->
+//            updateNote(note = note)
+//        }
+//    }
+
+    fun updateOptionsVisibility(showOptions: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                showNoteOptions = showOptions
+            )
+        }
+    }
+
+    fun updateCategoryPopupVisibility(showPopup: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(showCategoryPopup = showPopup)
+        }
+    }
+
+    fun resetScreenState(){
+        _uiState.update { currentState ->
+            currentState.copy(
+                selectedNoteList = emptyList(),
+                showNoteOptions = false,
+                showCategoryPopup = false,
+                isSelectionModeActivated = false
+            )
+        }
+    }
+
+    // TODO refact this action to multi selection
+//    fun setupNoteOptions() {
+//        val selectedNote = _uiState.value.selectedNoteList
+//
+//        if (selectedNote.isNotEmpty()) {
+//
+//            val options = selectedNote.getOptions(
+//                onCategoryClick = {
+//                    updateCategoryPopupVisibility(true)
+//                },
+//                onScheduleClick = {}, // TODO setup scheduling
+//                onProtectClick = {}, // TODO setup note protection
+//                onDeleteClick = { deleteNote(selectedNote) }
+//            )
+//
+//            _uiState.update { currentState ->
+//                currentState.copy(
+//                    noteOptions = options
+//                )
+//            }
+//        }
+//    }
+
     private fun handleSimpleNoteSelection(note: Note) {
         _uiState.update { currentState ->
             currentState.copy(selectedNoteList = listOf(note), showNoteOptions = true)
@@ -105,56 +166,6 @@ class DashboardViewModel(
 
         return notes.toList()
     }
-
-    // TODO refact this action to multi selection
-//    fun updateSelectedNoteCategory(category: Category) {
-//
-//        _uiState.update { currentState ->
-//            currentState.copy(selectedNote = currentState.selectedNote?.apply {
-//                this.category = category
-//            })
-//        }
-//        _uiState.value.selectedNote?.let { note ->
-//            updateNote(note = note)
-//        }
-//    }
-
-    fun updateOptionsVisibility(showOptions: Boolean) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                showNoteOptions = showOptions
-            )
-        }
-    }
-
-    fun updateCategoryPopupVisibility(showPopup: Boolean) {
-        _uiState.update { currentState ->
-            currentState.copy(showCategoryPopup = showPopup)
-        }
-    }
-
-    // TODO refact this action to multi selection
-//    fun setupNoteOptions() {
-//        val selectedNote = _uiState.value.selectedNoteList
-//
-//        if (selectedNote.isNotEmpty()) {
-//
-//            val options = selectedNote.getOptions(
-//                onCategoryClick = {
-//                    updateCategoryPopupVisibility(true)
-//                },
-//                onScheduleClick = {}, // TODO setup scheduling
-//                onProtectClick = {}, // TODO setup note protection
-//                onDeleteClick = { deleteNote(selectedNote) }
-//            )
-//
-//            _uiState.update { currentState ->
-//                currentState.copy(
-//                    noteOptions = options
-//                )
-//            }
-//        }
-//    }
 
     private fun resetSelectionList() {
         _uiState.update { currentState ->
