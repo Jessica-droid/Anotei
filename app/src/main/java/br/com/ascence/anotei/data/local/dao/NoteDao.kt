@@ -26,4 +26,10 @@ interface NoteDao {
 
     @Query("SELECT * FROM notes WHERE id = :noteId")
     fun getNote(noteId: Int): Flow<NoteEntity>
+
+    @Query("UPDATE notes SET category = :category WHERE id IN (:notesIds)")
+    suspend fun updateCategoryRange(
+        category: NoteEntity.NoteEntityCategory,
+        notesIds: List<Int>,
+    )
 }

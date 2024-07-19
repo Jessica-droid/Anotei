@@ -6,7 +6,6 @@ import br.com.ascence.anotei.data.local.repositories.NotesRepository
 import br.com.ascence.anotei.model.Category
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.NoteOption
-import br.com.ascence.anotei.model.extension.toEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -59,20 +58,12 @@ class DashboardViewModel(
 
     fun updateSelectedNoteCategory(category: Category) {
 
-        val selectedNote = _uiState.value.selectedNoteList.firstOrNull()
-
-        selectedNote?.let {
-            if (_uiState.value.isSelectionModeActivated) {
-                // TODO setup category update for lists
-            } else {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        selectedNoteList = listOfNotNull(it.apply { this.category = category })
-                    )
-                }
-                updateNote(note = selectedNote)
-            }
+        if (_uiState.value.isSelectionModeActivated) {
+            updateCategoryRange(category)
+        } else {
+            updateNoteCategory(category = category)
         }
+
     }
 
     fun updateOptionsVisibility(showOptions: Boolean) {
@@ -184,10 +175,27 @@ class DashboardViewModel(
         }
     }
 
+    private fun updateCategoryRange(category: Category) {
+        val selectedNotesId = _uiState.value.selectedNoteList.map { note -> note.id }
+
+        viewModelScope.launch {
+            try {
+                notesRepository.updateCategoryRange(
+                    category = category,
+                    idList = selectedNotesId
+                )
+            } catch (ex: Exception) {
+                println("Could not UPDATE this range of notes: ${ex.message}")
+            } finally {
+                fetchNotes()
+            }
+        }
+    }
+
     private fun deleteNote(note: Note) {
         viewModelScope.launch {
             try {
-                notesRepository.deleteNote(note.toEntity())
+                notesRepository.deleteNote(note)
             } catch (ex: Exception) {
                 println("Could not DELETE this note: ${ex.message}")
             } finally {
@@ -196,15 +204,20 @@ class DashboardViewModel(
         }
     }
 
-    private fun updateNote(note: Note) {
-        viewModelScope.launch {
-            try {
-                notesRepository.updateNote(note)
-            } catch (ex: Exception) {
-                println("Could not UPDATE this note: ${ex.message}")
-            } finally {
-                fetchNotes()
+    private fun updateNoteCategory(category: Category) {
+
+        val selectedNote = _uiState.value.selectedNoteList.firstOrNull()
+
+        selectedNote?.let {
+            viewModelScope.launch {
+                try {
+                    notesRepository.updateNote(it.apply { it.category = category })
+                } catch (ex: Exception) {
+                    println("Could not UPDATE this note: ${ex.message}")
+                } finally {
+                    fetchNotes()
+                }
             }
-        }
+        } ?: println("NO CATEGORY SELECTED TO UPDATE")
     }
 }
