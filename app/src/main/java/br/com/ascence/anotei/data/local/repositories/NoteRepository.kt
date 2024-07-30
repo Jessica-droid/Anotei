@@ -17,4 +17,6 @@ interface NotesRepository {
     suspend fun updateNote(note: Note)
 
     suspend fun updateCategoryRange(category: Category, idList: List<Int>)
+
+    suspend fun deleteNoteRange(idList: List<Int>)
 }

@@ -32,4 +32,9 @@ interface NoteDao {
         category: NoteEntity.NoteEntityCategory,
         notesIds: List<Int>,
     )
+
+    @Query("DELETE from notes WHERE id IN (:notesIds)")
+    suspend fun deleteNoteRange(
+        notesIds: List<Int>,
+    )
 }

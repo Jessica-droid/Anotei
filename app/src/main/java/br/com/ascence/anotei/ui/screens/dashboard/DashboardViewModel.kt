@@ -92,21 +92,23 @@ class DashboardViewModel(
     }
 
     fun handleNoteOptionClick(option: NoteOption) {
-        val isSelectionModeActivated = _uiState.value.isSelectionModeActivated
-
         when (option) {
             is NoteOption.Category -> updateCategoryPopupVisibility(true)
-            is NoteOption.Delete -> {
-                if (isSelectionModeActivated) {
-                    // TODO setup note deletion for lists
-                } else {
-                    val selectedNote = _uiState.value.selectedNoteList.firstOrNull()
-                    selectedNote?.let { deleteNote(it) }
-                }
-            }
-
+            is NoteOption.Delete -> handleNoteDeletion()
             is NoteOption.Protect -> TODO()
             is NoteOption.Schedule -> TODO()
+        }
+    }
+
+    private fun handleNoteDeletion(){
+
+        val isSelectionModeActivated = _uiState.value.isSelectionModeActivated
+
+        if (isSelectionModeActivated) {
+            deleteNoteRange()
+        } else {
+            val selectedNote = _uiState.value.selectedNoteList.firstOrNull()
+            selectedNote?.let { deleteNote(it) }
         }
     }
 
@@ -198,6 +200,22 @@ class DashboardViewModel(
                 notesRepository.deleteNote(note)
             } catch (ex: Exception) {
                 println("Could not DELETE this note: ${ex.message}")
+            } finally {
+                fetchNotes()
+            }
+        }
+    }
+
+    private fun deleteNoteRange() {
+        val selectedNotesId = _uiState.value.selectedNoteList.map { note -> note.id }
+
+        viewModelScope.launch {
+            try {
+                notesRepository.deleteNoteRange(
+                    idList = selectedNotesId
+                )
+            } catch (ex: Exception) {
+                println("Could not DELETE this range of notes: ${ex.message}")
             } finally {
                 fetchNotes()
             }
