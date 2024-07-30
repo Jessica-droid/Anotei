@@ -20,17 +20,29 @@ class NotesRepositoryImp(private val noteDao: NoteDao) : NotesRepository {
         entity.toNote()
     }
 
+    override suspend fun createNote(note: Note) {
+        noteDao.create(note.toEntity())
+    }
+
+    override suspend fun deleteNote(note: Note) {
+        noteDao.delete(note.toEntity())
+    }
+
+    override suspend fun updateNote(note: Note) {
+        noteDao.update(note.toEntity())
+    }
+
     override suspend fun updateCategoryRange(
         category: Category,
         idList: List<Int>,
-    ) = noteDao.updateCategoryRange(
-        category = category.toCategoryEntity(),
-        notesIds = idList
-    )
+    ) {
+        noteDao.updateCategoryRange(
+            category = category.toCategoryEntity(),
+            notesIds = idList
+        )
+    }
 
-    override suspend fun createNote(note: Note) = noteDao.create(note.toEntity())
-
-    override suspend fun deleteNote(note: Note) = noteDao.delete(note.toEntity())
-
-    override suspend fun updateNote(note: Note) = noteDao.update(note.toEntity())
+    override suspend fun deleteNoteRange(idList: List<Int>) {
+        noteDao.deleteNoteRange(notesIds = idList)
+    }
 }
