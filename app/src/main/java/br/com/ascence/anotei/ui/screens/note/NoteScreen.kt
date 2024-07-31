@@ -31,8 +31,8 @@ import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.extension.getColor
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
+import br.com.ascence.anotei.navigation.extensions.toNoteOptionsMode
 import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsWidget
-import br.com.ascence.anotei.ui.common.components.noteoptions.presentation.NoteOptionsMode
 import br.com.ascence.anotei.ui.common.components.popup.AppPopup
 import br.com.ascence.anotei.ui.common.components.popup.contents.NoteCategorySelection
 import br.com.ascence.anotei.ui.screens.note.NoteScreenViewModel.Companion.TITLE_MAX_LENGTH
@@ -75,16 +75,6 @@ fun NoteScreenContent(
             state.creationDate
         }
 
-    // TODO update to use new options helper
-//    val noteOptions = NoteOptionsHelper().getOptions(
-//        noteType = noteType,
-//        noteCategory = state.noteCategory,
-//        onCategoryClick = { viewModel.showCategoryPopup() },
-//        onScheduleClick = { },
-//        onProtectClick = { },
-//        onDeleteClick = { viewModel.showDeleteNoteAlert() }
-//    )
-
     LaunchedEffect(noteType) {
         when (noteType) {
             NoteType.NEW_NOTE -> {
@@ -113,11 +103,16 @@ fun NoteScreenContent(
         },
         bottomBar = {
             NoteOptionsWidget(
-                mode = NoteOptionsMode.EDIT_MODE,
+                mode = noteType.toNoteOptionsMode(),
                 selectedNotes = listOfNotNull(note),
-                isSelectionModeActivated = false,
-                onFABClick = {},
-                onOptionClick = {noteOption ->  }
+                onOptionClick = { noteOption -> viewModel.handleNoteOptionClick(noteOption) },
+                onFABClick = {
+                    viewModel.handleNote(
+                        noteType = noteType,
+                        note = note,
+                        onSaveNote = { result -> onBackPressed(result) }
+                    )
+                },
             )
         }
     ) { innerPadding ->

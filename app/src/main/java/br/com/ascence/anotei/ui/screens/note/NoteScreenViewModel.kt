@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import br.com.ascence.anotei.data.local.repositories.NotesRepository
 import br.com.ascence.anotei.model.Category
 import br.com.ascence.anotei.model.Note
+import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.navigation.NOTE_RESULT_CREATED_OR_UPDATED
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
@@ -66,6 +67,15 @@ class NoteScreenViewModel(
         }
     }
 
+    fun handleNoteOptionClick(option: NoteOption) {
+        when (option) {
+            is NoteOption.Category -> showCategoryPopup()
+            is NoteOption.Delete -> showDeleteNoteAlert()
+            is NoteOption.Protect -> {} // TODO
+            is NoteOption.Schedule -> {} // TODO
+        }
+    }
+
     fun hideAlertDialog() {
         _uiState.update { currentState ->
             currentState.copy(
@@ -99,7 +109,15 @@ class NoteScreenViewModel(
         }
     }
 
-    fun showDeleteNoteAlert() {
+    fun updateNoteCategory(category: Category) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                noteCategory = category
+            )
+        }
+    }
+
+    private fun showDeleteNoteAlert() {
         _uiState.update { currentState ->
             currentState.copy(
                 showNoteDiscardAlert = true
@@ -107,18 +125,10 @@ class NoteScreenViewModel(
         }
     }
 
-    fun showCategoryPopup() {
+    private fun showCategoryPopup() {
         _uiState.update { currentState ->
             currentState.copy(
                 showCategoryPopup = true
-            )
-        }
-    }
-
-    fun updateNoteCategory(category: Category) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                noteCategory = category
             )
         }
     }

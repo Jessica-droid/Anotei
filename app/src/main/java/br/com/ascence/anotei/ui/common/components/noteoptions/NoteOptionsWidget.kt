@@ -27,7 +27,7 @@ import br.com.ascence.anotei.ui.theme.AnoteiTheme
 internal fun NoteOptionsWidget(
     mode: NoteOptionsMode,
     selectedNotes: List<Note>,
-    isSelectionModeActivated: Boolean,
+    isSelectionModeActivated: Boolean = false,
     onFABClick: () -> Unit,
     onOptionClick: (NoteOption) -> Unit,
 ) {
