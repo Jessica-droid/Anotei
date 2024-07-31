@@ -1,6 +1,7 @@
 package br.com.ascence.anotei.ui.screens.note
 
 import br.com.ascence.anotei.model.Category
+import br.com.ascence.anotei.model.NoteOption
 
 data class NoteScreenState(
     val showContentAlert: Boolean = false,
@@ -10,5 +11,6 @@ data class NoteScreenState(
     val title: String = "",
     val creationDate: String = "",
     val description: String = "",
-    val noteCategory: Category = Category.DEFAULT
+    val noteCategory: Category = Category.DEFAULT,
+    val noteOptions: List<NoteOption> = emptyList()
 )
