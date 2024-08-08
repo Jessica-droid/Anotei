@@ -28,6 +28,11 @@
             android:exported="true"
             android:theme="@style/Theme.Anotei"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.screens.noteDisplay.NoteDisplayActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Anotei"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

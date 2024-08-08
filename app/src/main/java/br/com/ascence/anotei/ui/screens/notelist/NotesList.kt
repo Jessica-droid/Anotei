@@ -1,11 +1,14 @@
 package br.com.ascence.anotei.ui.screens.notelist
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -19,14 +22,16 @@ import br.com.ascence.anotei.ui.screens.notelist.components.notecard.NoteCard
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun NotesListScreen(
+fun SharedTransitionScope.NotesListScreen(
     notesList: List<Note>,
     selectedNotesList: List<Note>,
     canExpandCard: Boolean,
     onNoteClick: (Note) -> Unit,
     onNoteSelection: (Note) -> Unit,
     shouldResetScroll: Boolean,
+    animationScope: AnimatedVisibilityScope?,
     modifier: Modifier = Modifier,
 ) {
     ListContent(
@@ -36,18 +41,21 @@ fun NotesListScreen(
         shouldResetScroll = shouldResetScroll,
         onNoteClick = { note -> onNoteClick(note) },
         onNoteSelection = { note -> onNoteSelection(note) },
+        animationScope = animationScope,
         modifier = modifier,
     )
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun ListContent(
+private fun SharedTransitionScope.ListContent(
     notes: List<Note>,
     selectedNotesList: List<Note>,
     canExpandCard: Boolean,
     onNoteClick: (Note) -> Unit,
     onNoteSelection: (Note) -> Unit,
     shouldResetScroll: Boolean,
+    animationScope: AnimatedVisibilityScope? = null,
     modifier: Modifier = Modifier,
 ) {
     if (notes.isNotEmpty()) {
@@ -58,6 +66,7 @@ private fun ListContent(
             selectedNotesList = selectedNotesList,
             canExpandCard = canExpandCard,
             shouldResetScroll = shouldResetScroll,
+            animationScope = animationScope,
             modifier = modifier,
         )
     } else {
@@ -69,14 +78,16 @@ private fun ListContent(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun Notes(
+private fun SharedTransitionScope.Notes(
     notes: List<Note>,
     selectedNotesList: List<Note>,
     canExpandCard: Boolean,
     onNoteClick: (Note) -> Unit,
     onNoteSelection: (Note) -> Unit,
     shouldResetScroll: Boolean,
+    animationScope: AnimatedVisibilityScope?,
     modifier: Modifier = Modifier,
 ) {
 
@@ -103,7 +114,8 @@ private fun Notes(
                 onCardSelection = onNoteSelection,
                 isCardSelected = selectedNotesList.any { it.id == note.id },
                 shouldExpandCard = canExpandCard,
-                modifier = Modifier.padding(horizontal = AnoteiAppTheme.spaces.medium)
+                animationScope = animationScope,
+                modifier = modifier
             )
         }
         item {
@@ -112,32 +124,38 @@ private fun Notes(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @ColorSchemePreviews
 @Composable
 private fun NotesListPreview() {
     AnoteiTheme {
-        ListContent(
-            notes = notesListMock,
-            selectedNotesList = emptyList(),
-            canExpandCard = false,
-            onNoteClick = {},
-            onNoteSelection = {},
-            shouldResetScroll = false
-        )
+        SharedTransitionLayout {
+            ListContent(
+                notes = notesListMock,
+                selectedNotesList = emptyList(),
+                canExpandCard = false,
+                onNoteClick = {},
+                onNoteSelection = {},
+                shouldResetScroll = false
+            )
+        }
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @ColorSchemePreviews
 @Composable
 private fun NotesListEmptyPreview() {
     AnoteiTheme {
-        ListContent(
-            notes = emptyList(),
-            selectedNotesList = emptyList(),
-            canExpandCard = false,
-            onNoteClick = {},
-            onNoteSelection = {},
-            shouldResetScroll = false
-        )
+        SharedTransitionLayout {
+            ListContent(
+                notes = emptyList(),
+                selectedNotesList = emptyList(),
+                canExpandCard = false,
+                onNoteClick = {},
+                onNoteSelection = {},
+                shouldResetScroll = false
+            )
+        }
     }
 }
