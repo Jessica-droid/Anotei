@@ -2,19 +2,18 @@ package br.com.ascence.anotei.ui.screens.notelist.components.notecard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Brightness1
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,12 +38,15 @@ fun NoteCardHeader(
         modifier = modifier
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            TitleAndCategoryColor(title = title, color = categoryColor)
+            TitleAndCategoryColor(
+                title = title,
+                color = categoryColor,
+            )
             Text(
                 text = creationDate,
                 color = AnoteiAppTheme.colors.tertiaryTextColor,
                 fontSize = AnoteiAppTheme.fontSizes.small,
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             )
         }
         NoteStatus(noteStatus = status)
@@ -52,15 +54,19 @@ fun NoteCardHeader(
 }
 
 @Composable
-private fun TitleAndCategoryColor(title: String, color: Color) {
+private fun TitleAndCategoryColor(
+    title: String,
+    color: Color,
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
+        Icon(
+            imageVector = Icons.Default.Brightness1,
+            tint = color,
+            contentDescription = "Cor da categoria",
             modifier = Modifier
                 .size(AnoteiAppTheme.spaces.medium)
-                .clip(CircleShape)
-                .background(color)
         )
         Text(
             text = title,
@@ -69,7 +75,8 @@ private fun TitleAndCategoryColor(title: String, color: Color) {
             fontWeight = FontWeight.SemiBold,
             maxLines = HEADER_TITLE_MAX_LINES,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(start = AnoteiAppTheme.spaces.xSmall),
+            modifier = Modifier
+                .padding(start = AnoteiAppTheme.spaces.xSmall)
         )
     }
 }
@@ -102,7 +109,7 @@ private fun NoteCardHeaderPreviewLight() {
             status = listOf(NoteStatusPresentation.SCHEDULED, NoteStatusPresentation.PROTECTED),
             modifier = Modifier
                 .fillMaxWidth()
-                .background(AnoteiAppTheme.colors.colorScheme.background)
+                .background(AnoteiAppTheme.colors.colorScheme.background),
         )
     }
 }

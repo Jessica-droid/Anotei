@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -23,7 +22,6 @@ import br.com.ascence.anotei.ui.theme.AnoteiTheme
 fun NotesListScreen(
     notesList: List<Note>,
     selectedNotesList: List<Note>,
-    canExpandCard: Boolean,
     onNoteClick: (Note) -> Unit,
     onNoteSelection: (Note) -> Unit,
     shouldResetScroll: Boolean,
@@ -32,7 +30,6 @@ fun NotesListScreen(
     ListContent(
         notes = notesList,
         selectedNotesList = selectedNotesList,
-        canExpandCard = canExpandCard,
         shouldResetScroll = shouldResetScroll,
         onNoteClick = { note -> onNoteClick(note) },
         onNoteSelection = { note -> onNoteSelection(note) },
@@ -44,7 +41,6 @@ fun NotesListScreen(
 private fun ListContent(
     notes: List<Note>,
     selectedNotesList: List<Note>,
-    canExpandCard: Boolean,
     onNoteClick: (Note) -> Unit,
     onNoteSelection: (Note) -> Unit,
     shouldResetScroll: Boolean,
@@ -56,7 +52,6 @@ private fun ListContent(
             onNoteClick = onNoteClick,
             onNoteSelection = onNoteSelection,
             selectedNotesList = selectedNotesList,
-            canExpandCard = canExpandCard,
             shouldResetScroll = shouldResetScroll,
             modifier = modifier,
         )
@@ -73,7 +68,6 @@ private fun ListContent(
 private fun Notes(
     notes: List<Note>,
     selectedNotesList: List<Note>,
-    canExpandCard: Boolean,
     onNoteClick: (Note) -> Unit,
     onNoteSelection: (Note) -> Unit,
     shouldResetScroll: Boolean,
@@ -102,8 +96,7 @@ private fun Notes(
                 onCardClick = onNoteClick,
                 onCardSelection = onNoteSelection,
                 isCardSelected = selectedNotesList.any { it.id == note.id },
-                shouldExpandCard = canExpandCard,
-                modifier = Modifier.padding(horizontal = AnoteiAppTheme.spaces.medium)
+                modifier = modifier
             )
         }
         item {
@@ -119,7 +112,6 @@ private fun NotesListPreview() {
         ListContent(
             notes = notesListMock,
             selectedNotesList = emptyList(),
-            canExpandCard = false,
             onNoteClick = {},
             onNoteSelection = {},
             shouldResetScroll = false
@@ -134,7 +126,6 @@ private fun NotesListEmptyPreview() {
         ListContent(
             notes = emptyList(),
             selectedNotesList = emptyList(),
-            canExpandCard = false,
             onNoteClick = {},
             onNoteSelection = {},
             shouldResetScroll = false

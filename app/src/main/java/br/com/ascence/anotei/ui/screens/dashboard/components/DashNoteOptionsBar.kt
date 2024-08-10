@@ -17,7 +17,7 @@ fun DashNoteOptionsBar(
     isSelectionModeActivated: Boolean,
     selectedNotes: List<Note>,
     onFABClick: () -> Unit,
-    onOptionClick: (NoteOption) -> Unit
+    onOptionClick: (NoteOption) -> Unit,
 ) {
     AnimatedVisibility(
         visible = showBottomBar,

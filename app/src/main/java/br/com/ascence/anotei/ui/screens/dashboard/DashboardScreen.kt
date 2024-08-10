@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import br.com.ascence.anotei.data.local.AnoteiDatabase
 import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
 import br.com.ascence.anotei.data.mock.notesListMock
@@ -21,10 +22,12 @@ import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.model.Category
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.NoteOption
+import br.com.ascence.anotei.navigation.CScreens
 import br.com.ascence.anotei.navigation.NOTE_RESULT_CREATED_OR_UPDATED
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NewNoteActivityResultContract
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
+import br.com.ascence.anotei.navigation.extensions.navigateWithArgs
 import br.com.ascence.anotei.ui.common.components.popup.AppPopup
 import br.com.ascence.anotei.ui.common.components.popup.contents.NoteCategorySelection
 import br.com.ascence.anotei.ui.screens.notelist.NotesListScreen
@@ -34,7 +37,9 @@ import br.com.ascence.anotei.ui.screens.dashboard.components.NewNoteButton
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
 @Composable
-fun DashboardScreen() {
+fun DashboardScreen(
+    navController: NavController,
+) {
     val contextCompat = LocalContext.current
 
     val db = AnoteiDatabase.getDatabase(context = contextCompat)
@@ -52,7 +57,10 @@ fun DashboardScreen() {
         ),
         onResult = { result ->
             when (result) {
-                NOTE_RESULT_CREATED_OR_UPDATED -> viewModel.fetchNotes()
+                NOTE_RESULT_CREATED_OR_UPDATED -> {
+                   viewModel.fetchNotes()
+                   viewModel.resetListScrollState()
+                }
                 NOTE_RESULT_NOTHING -> println(">>>>>>>> NOTHING")
             }
         }
@@ -64,7 +72,7 @@ fun DashboardScreen() {
         viewModel.resetScreenState()
     }
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(key1 = state.notesList) {
         viewModel.fetchNotes()
     }
 
@@ -74,7 +82,14 @@ fun DashboardScreen() {
         selectedNoteList = state.selectedNoteList,
         isNoteSelectionActivated = state.isSelectionModeActivated,
         onNoteClick = { note ->
-            viewModel.updateNoteSelection(note)
+            if (state.isSelectionModeActivated) {
+                viewModel.updateNoteSelection(note)
+            } else {
+                navController.navigateWithArgs(
+                    screen = CScreens.NOTE_DISPLAY,
+                    args = listOf(note.id.toString())
+                )
+            }
         },
         onNoteSelection = { note ->
             viewModel.updateNoteSelection(note)
@@ -94,7 +109,7 @@ fun DashboardScreen() {
         },
         onDismissCategoryPopup = { viewModel.updateCategoryPopupVisibility(false) },
         shouldResetListScroll = state.shouldResetListScroll,
-        onNoteOptionsClick = { option -> viewModel.handleNoteOptionClick(option) }
+        onNoteOptionsClick = { option -> viewModel.handleNoteOptionClick(option) },
     )
 }
 
@@ -159,7 +174,6 @@ private fun DashBoardContent(
                 onNoteSelection = onNoteSelection,
                 selectedNotesList = selectedNoteList,
                 shouldResetScroll = shouldResetListScroll,
-                canExpandCard = isNoteSelectionActivated.not(),
                 modifier = Modifier.fillMaxSize()
             )
         }
