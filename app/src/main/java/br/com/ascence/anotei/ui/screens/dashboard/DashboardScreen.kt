@@ -2,10 +2,6 @@ package br.com.ascence.anotei.ui.screens.dashboard
 
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
-import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -40,11 +36,9 @@ import br.com.ascence.anotei.ui.screens.dashboard.components.DashNoteOptionsBar
 import br.com.ascence.anotei.ui.screens.dashboard.components.NewNoteButton
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SharedTransitionScope.DashboardScreen(
+fun DashboardScreen(
     navController: NavController,
-    animatedVisibilityScope: AnimatedVisibilityScope,
 ) {
     val contextCompat = LocalContext.current
 
@@ -63,7 +57,10 @@ fun SharedTransitionScope.DashboardScreen(
         ),
         onResult = { result ->
             when (result) {
-                NOTE_RESULT_CREATED_OR_UPDATED -> viewModel.fetchNotes()
+                NOTE_RESULT_CREATED_OR_UPDATED -> {
+                   viewModel.fetchNotes()
+                   viewModel.resetListScrollState()
+                }
                 NOTE_RESULT_NOTHING -> println(">>>>>>>> NOTHING")
             }
         }
@@ -75,7 +72,7 @@ fun SharedTransitionScope.DashboardScreen(
         viewModel.resetScreenState()
     }
 
-    LaunchedEffect(key1 = Unit) {
+    LaunchedEffect(key1 = state.notesList) {
         viewModel.fetchNotes()
     }
 
@@ -113,13 +110,11 @@ fun SharedTransitionScope.DashboardScreen(
         onDismissCategoryPopup = { viewModel.updateCategoryPopupVisibility(false) },
         shouldResetListScroll = state.shouldResetListScroll,
         onNoteOptionsClick = { option -> viewModel.handleNoteOptionClick(option) },
-        animatedVisibilityScope = animatedVisibilityScope
     )
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun SharedTransitionScope.DashBoardContent(
+private fun DashBoardContent(
     showNoteOptions: Boolean,
     isNoteSelectionActivated: Boolean,
     notesList: List<Note>,
@@ -133,7 +128,6 @@ private fun SharedTransitionScope.DashBoardContent(
     onNoteCategorySelected: (Category) -> Unit,
     onDismissCategoryPopup: () -> Unit,
     shouldResetListScroll: Boolean,
-    animatedVisibilityScope: AnimatedVisibilityScope? = null,
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -180,60 +174,52 @@ private fun SharedTransitionScope.DashBoardContent(
                 onNoteSelection = onNoteSelection,
                 selectedNotesList = selectedNoteList,
                 shouldResetScroll = shouldResetListScroll,
-                canExpandCard = isNoteSelectionActivated.not(),
-                animationScope = animatedVisibilityScope,
                 modifier = Modifier.fillMaxSize()
             )
         }
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @ColorSchemePreviews
 @Composable
 fun DashboardPreview() {
     AnoteiTheme {
-        SharedTransitionLayout {
-            DashBoardContent(
-                notesList = notesListMock,
-                showNoteOptions = false,
-                isNoteSelectionActivated = false,
-                selectedNoteList = emptyList(),
-                onNoteClick = { _ -> },
-                onNoteSelection = { _ -> },
-                onNewNoteClick = {},
-                onAlterNoteClick = {},
-                showCategoryPopup = false,
-                onNoteCategorySelected = {},
-                onDismissCategoryPopup = {},
-                shouldResetListScroll = false,
-                onNoteOptionsClick = {}
-            )
-        }
+        DashBoardContent(
+            notesList = notesListMock,
+            showNoteOptions = false,
+            isNoteSelectionActivated = false,
+            selectedNoteList = emptyList(),
+            onNoteClick = { _ -> },
+            onNoteSelection = { _ -> },
+            onNewNoteClick = {},
+            onAlterNoteClick = {},
+            showCategoryPopup = false,
+            onNoteCategorySelected = {},
+            onDismissCategoryPopup = {},
+            shouldResetListScroll = false,
+            onNoteOptionsClick = {}
+        )
     }
 }
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @ColorSchemePreviews
 @Composable
 fun DashboardEmptyStatePreview() {
     AnoteiTheme {
-        SharedTransitionLayout {
-            DashBoardContent(
-                notesList = emptyList(),
-                showNoteOptions = false,
-                isNoteSelectionActivated = false,
-                selectedNoteList = emptyList(),
-                onNoteClick = { _ -> },
-                onNoteSelection = { _ -> },
-                onNewNoteClick = {},
-                onAlterNoteClick = {},
-                showCategoryPopup = false,
-                onNoteCategorySelected = {},
-                onDismissCategoryPopup = {},
-                shouldResetListScroll = false,
-                onNoteOptionsClick = {}
-            )
-        }
+        DashBoardContent(
+            notesList = emptyList(),
+            showNoteOptions = false,
+            isNoteSelectionActivated = false,
+            selectedNoteList = emptyList(),
+            onNoteClick = { _ -> },
+            onNoteSelection = { _ -> },
+            onNewNoteClick = {},
+            onAlterNoteClick = {},
+            showCategoryPopup = false,
+            onNoteCategorySelected = {},
+            onDismissCategoryPopup = {},
+            shouldResetListScroll = false,
+            onNoteOptionsClick = {}
+        )
     }
 }

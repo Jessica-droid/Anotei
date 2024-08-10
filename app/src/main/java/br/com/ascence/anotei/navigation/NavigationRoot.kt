@@ -1,7 +1,7 @@
 package br.com.ascence.anotei.navigation
 
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -11,23 +11,31 @@ import androidx.navigation.navArgument
 import br.com.ascence.anotei.ui.screens.dashboard.DashboardScreen
 import br.com.ascence.anotei.ui.screens.noteDisplay.NoteDisplay
 
-@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun SetupAppNavigation(navController: NavHostController, sTScope: SharedTransitionScope) {
+fun SetupAppNavigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = CScreens.DASHBOARD.routePath) {
-        composable(CScreens.DASHBOARD.routePath) {
-            sTScope.DashboardScreen(
-                navController = navController,
-                this
-            )
+        composable(
+            route = CScreens.DASHBOARD.routePath
+        ) {
+            DashboardScreen(navController = navController)
         }
         composable(
-            "${CScreens.NOTE_DISPLAY.routePath}/{$NOTE_ID_ARG}",
+            route = "${CScreens.NOTE_DISPLAY.routePath}/{$NOTE_ID_ARG}",
             arguments = listOf(
                 navArgument(NOTE_ID_ARG) { type = NavType.StringType }
-            )
+            ),
+            enterTransition = {
+                return@composable slideIntoContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Up, tween(500)
+                )
+            },
+            popExitTransition = {
+                return@composable slideOutOfContainer(
+                    AnimatedContentTransitionScope.SlideDirection.Down, tween(500)
+                )
+            }
         ) { backStepEntry ->
-            sTScope.NoteDisplay(noteId = backStepEntry.arguments?.getString(NOTE_ID_ARG), this)
+            NoteDisplay(noteId = backStepEntry.arguments?.getString(NOTE_ID_ARG))
         }
     }
 }

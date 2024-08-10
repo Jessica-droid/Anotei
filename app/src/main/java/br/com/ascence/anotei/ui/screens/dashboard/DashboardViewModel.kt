@@ -20,7 +20,6 @@ class DashboardViewModel(
     val uiState: StateFlow<DashBoardState> = _uiState.asStateFlow()
 
     fun fetchNotes() {
-        updateListScrollState(shouldReset = true)
         viewModelScope.launch {
             notesRepository.getAllNotesStream().collect { entities ->
                 _uiState.update { currentState ->
@@ -30,12 +29,11 @@ class DashboardViewModel(
                         isSelectionModeActivated = false,
                         selectedNoteList = emptyList(),
                         showCategoryPopup = false,
-                        shouldResetListScroll = true
+                        shouldResetListScroll = false
                     )
                 }
             }
         }
-        updateListScrollState(shouldReset = false)
     }
 
     fun toggleSelectionMode(activate: Boolean) {
@@ -97,6 +95,14 @@ class DashboardViewModel(
             is NoteOption.Delete -> handleNoteDeletion()
             is NoteOption.Protect -> TODO()
             is NoteOption.Schedule -> TODO()
+        }
+    }
+
+    fun resetListScrollState() {
+        _uiState.update { currentState ->
+            currentState.copy(
+                shouldResetListScroll = true
+            )
         }
     }
 
@@ -166,14 +172,6 @@ class DashboardViewModel(
     private fun resetSelectionList() {
         _uiState.update { currentState ->
             currentState.copy(selectedNoteList = emptyList())
-        }
-    }
-
-    private fun updateListScrollState(shouldReset: Boolean) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                shouldResetListScroll = shouldReset
-            )
         }
     }
 
