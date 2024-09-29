@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import br.com.ascence.anotei.data.local.AnoteiDatabase
 import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
@@ -25,6 +26,7 @@ import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.navigation.CScreens
 import br.com.ascence.anotei.navigation.NOTE_RESULT_CREATED_OR_UPDATED
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
+import br.com.ascence.anotei.navigation.NOTE_TYPE_EXTRA
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NewNoteActivityResultContract
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
 import br.com.ascence.anotei.navigation.extensions.navigateWithArgs
@@ -38,6 +40,7 @@ import br.com.ascence.anotei.ui.theme.AnoteiTheme
 
 @Composable
 fun DashboardScreen(
+    navBackStackEntry: NavBackStackEntry,
     navController: NavController,
 ) {
     val contextCompat = LocalContext.current
@@ -58,8 +61,8 @@ fun DashboardScreen(
         onResult = { result ->
             when (result) {
                 NOTE_RESULT_CREATED_OR_UPDATED -> {
-                   viewModel.fetchNotes()
-                   viewModel.resetListScrollState()
+                    viewModel.fetchNotes()
+                    viewModel.resetListScrollState()
                 }
                 NOTE_RESULT_NOTHING -> println(">>>>>>>> NOTHING")
             }
@@ -76,6 +79,12 @@ fun DashboardScreen(
         viewModel.fetchNotes()
     }
 
+    LaunchedEffect(key1 = navBackStackEntry.savedStateHandle) {
+        navBackStackEntry.savedStateHandle.get<String>(NOTE_TYPE_EXTRA)?.let { result ->
+            println(">>>>>> SCREEN RESULT $result") // TODO SETUP SCREEN RESULT
+        }
+    }
+
     DashBoardContent(
         notesList = state.notesList,
         showNoteOptions = state.showNoteOptions,
@@ -87,7 +96,7 @@ fun DashboardScreen(
             } else {
                 navController.navigateWithArgs(
                     screen = CScreens.NOTE_DISPLAY,
-                    args = listOf(note.id.toString())
+                    args = listOf(note.id.toString(), NoteType.DISPLAY_NOTE.name)
                 )
             }
         },
@@ -96,7 +105,10 @@ fun DashboardScreen(
             viewModel.toggleSelectionMode(true)
         },
         onNewNoteClick = {
-            noteScreen.launch(NoteType.NEW_NOTE)
+            navController.navigateWithArgs(
+                screen = CScreens.NOTE_DISPLAY,
+                args = listOf(NoteType.NEW_NOTE.name)
+            )
         },
         onAlterNoteClick = {
             noteScreen.launch(NoteType.UPDATE_NOTE)

@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -14,7 +16,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import br.com.ascence.anotei.data.local.AnoteiDatabase
 import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
@@ -78,6 +83,40 @@ private fun TextNoteDisplayContent(
                         .fillMaxSize()
                         .padding(vertical = AnoteiAppTheme.spaces.medium)
                 )
+                BasicTextField(
+                    value = "Field normal",
+                    textStyle = TextStyle(
+                        color = AnoteiAppTheme.colors.secondaryTextColor,
+                        fontSize = AnoteiAppTheme.fontSizes.medium,
+                    ),
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                    onValueChange = { newContent ->
+                        //viewModel.onDescriptionUpdate(newContent)
+                    },
+                    cursorBrush = SolidColor(AnoteiAppTheme.colors.colorScheme.secondary),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(AnoteiAppTheme.spaces.medium)
+                      //  .focusRequester(focusRequester)
+                )
+                BasicTextField(
+                    value = "Field normal",
+                    readOnly = true,
+                    textStyle = TextStyle(
+                        color = AnoteiAppTheme.colors.secondaryTextColor,
+                        fontSize = AnoteiAppTheme.fontSizes.medium,
+                    ),
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                    onValueChange = { newContent ->
+                        //viewModel.onDescriptionUpdate(newContent)
+                    },
+                    cursorBrush = SolidColor(AnoteiAppTheme.colors.colorScheme.secondary),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(AnoteiAppTheme.spaces.medium)
+                    //  .focusRequester(focusRequester)
+                )
+
             }
         }
     } ?: Box(modifier = Modifier.fillMaxSize()) {

@@ -17,7 +17,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -29,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import br.com.ascence.anotei.data.preview.ColorSchemePreviews
 import br.com.ascence.anotei.ui.theme.AnoteiAppTheme
 import br.com.ascence.anotei.ui.theme.AnoteiTheme
+import br.com.ascence.anotei.ui.utils.modifyIfNotNull
 
 @Composable
 fun NoteHeader(
@@ -38,15 +38,15 @@ fun NoteHeader(
     onTitleChanged: (String) -> Unit,
     isNewNote: Boolean,
     titleMaxLength: String,
+    isEditModeActivated: Boolean,
     onTitleDone: () -> Unit,
     modifier: Modifier = Modifier,
+    focusRequester: FocusRequester? = null,
 ) {
 
-    val focusRequester = remember { FocusRequester() }
-
-    LaunchedEffect(Unit) {
+    LaunchedEffect(isNewNote) {
         if (isNewNote) {
-            focusRequester.requestFocus()
+            focusRequester?.requestFocus()
         }
     }
 
@@ -67,50 +67,64 @@ fun NoteHeader(
                     .size(AnoteiAppTheme.spaces.xxxLarge)
             )
 
-            TextField(
-                value = titleInitialValue,
-                onValueChange = onTitleChanged,
-                textStyle = TextStyle(
+            if (isEditModeActivated) {
+
+                TextField(
+                    value = titleInitialValue,
+                    onValueChange = onTitleChanged,
+                    textStyle = TextStyle(
+                        color = AnoteiAppTheme.colors.primaryTextColor,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = AnoteiAppTheme.fontSizes.xLarge,
+                    ),
+                    placeholder = {
+                        Text(
+                            text = "Defina um título",
+                            color = AnoteiAppTheme.colors.accentColor,
+                            fontSize = AnoteiAppTheme.fontSizes.xLarge,
+                            fontWeight = FontWeight.Light,
+                        )
+                    },
+                    supportingText = {
+                        Box(
+                            contentAlignment = Alignment.CenterEnd,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = "${titleInitialValue.length}/$titleMaxLength",
+                                color = AnoteiAppTheme.colors.bottomBarFabColor,
+                                fontSize = AnoteiAppTheme.fontSizes.small,
+                                fontWeight = FontWeight.Normal,
+                            )
+                        }
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
+                    keyboardActions = KeyboardActions(
+                        onDone = { onTitleDone() }
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = AnoteiAppTheme.colors.colorScheme.background,
+                        focusedContainerColor = AnoteiAppTheme.colors.colorScheme.background,
+                        cursorColor = AnoteiAppTheme.colors.colorScheme.secondary,
+                        focusedIndicatorColor = AnoteiAppTheme.colors.bottomBarFabColor,
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .modifyIfNotNull(focusRequester) {
+                            focusRequester(it)
+                        }
+                )
+            } else {
+                Text(
+                    text = titleInitialValue,
                     color = AnoteiAppTheme.colors.primaryTextColor,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = AnoteiAppTheme.fontSizes.xLarge,
-                ),
-                placeholder = {
-                    Text(
-                        text = "Defina um título",
-                        color = AnoteiAppTheme.colors.accentColor,
-                        fontSize = AnoteiAppTheme.fontSizes.xLarge,
-                        fontWeight = FontWeight.Light,
-                    )
-                },
-                supportingText = {
-                    Box(
-                        contentAlignment = Alignment.CenterEnd,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "${titleInitialValue.length}/$titleMaxLength",
-                            color = AnoteiAppTheme.colors.bottomBarFabColor,
-                            fontSize = AnoteiAppTheme.fontSizes.small,
-                            fontWeight = FontWeight.Normal,
-                        )
-                    }
-                },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
-                keyboardActions = KeyboardActions(
-                    onDone = { onTitleDone() }
-                ),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = AnoteiAppTheme.colors.colorScheme.background,
-                    focusedContainerColor = AnoteiAppTheme.colors.colorScheme.background,
-                    cursorColor = AnoteiAppTheme.colors.colorScheme.secondary,
-                    focusedIndicatorColor = AnoteiAppTheme.colors.bottomBarFabColor,
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester)
-            )
+                    modifier = Modifier
+                        .padding(horizontal = AnoteiAppTheme.spaces.medium)
+                )
+            }
         }
         Text(
             text = creationDateValue,
@@ -132,6 +146,7 @@ private fun NoteScreenPreviewLight() {
             onTitleChanged = {},
             isNewNote = false,
             titleMaxLength = "40",
+            isEditModeActivated = false,
             onTitleDone = {}
         )
     }
