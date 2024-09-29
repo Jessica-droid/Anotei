@@ -106,7 +106,7 @@ class DashboardViewModel(
         }
     }
 
-    private fun handleNoteDeletion(){
+    private fun handleNoteDeletion() {
 
         val isSelectionModeActivated = _uiState.value.isSelectionModeActivated
 
@@ -120,7 +120,7 @@ class DashboardViewModel(
 
     private fun handleSimpleNoteSelection(note: Note) {
         _uiState.update { currentState ->
-            currentState.copy(selectedNoteList = listOf(note), showNoteOptions = true)
+            currentState.copy(selectedNoteList = listOf(note))
         }
     }
 

@@ -25,12 +25,12 @@ class NoteActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AnoteiTheme {
-                NoteScreenContent(
-                    noteType = noteType,
-                    note = note,
-                ) { result ->
-                    finishWithResult(result)
-                }
+//                NoteScreenContent(
+//                    noteType = noteType,
+//                    noteId = note.id,
+//                ) { result ->
+//                    finishWithResult(result)
+//                }
             }
         }
     }

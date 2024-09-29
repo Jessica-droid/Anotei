@@ -6,5 +6,5 @@ import br.com.ascence.anotei.ui.common.components.noteoptions.presentation.NoteO
 internal fun NoteType.toNoteOptionsMode() =
     when (this) {
         NoteType.NEW_NOTE -> NoteOptionsMode.CREATE_MODE
-        NoteType.UPDATE_NOTE -> NoteOptionsMode.EDIT_MODE
+        NoteType.UPDATE_NOTE, NoteType.DISPLAY_NOTE -> NoteOptionsMode.EDIT_MODE
     }

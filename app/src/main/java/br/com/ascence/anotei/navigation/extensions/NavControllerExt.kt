@@ -3,7 +3,12 @@ package br.com.ascence.anotei.navigation.extensions
 import androidx.navigation.NavController
 import br.com.ascence.anotei.navigation.CScreens
 
-fun <T> NavController.navigateForResultOnce(key: String, onResult: (T) -> Unit) {
+fun <T> NavController.navigateForResultOnce(
+    screen: CScreens,
+    args: List<String>,
+    key: String,
+    onResult: (T) -> Unit,
+) {
     val screenResult = currentBackStackEntry
         ?.savedStateHandle
         ?.get<T>(key)
@@ -15,14 +20,15 @@ fun <T> NavController.navigateForResultOnce(key: String, onResult: (T) -> Unit) 
             ?.savedStateHandle
             ?.remove<T>(key)
     }
+
+    navigateWithArgs(screen, args)
 }
 
 fun <T> NavController.popBackStackWithResult(key: String, value: T) {
+    popBackStack()
     currentBackStackEntry
         ?.savedStateHandle
         ?.set(key, value)
-
-    popBackStack()
 }
 
 fun NavController.navigateWithArgs(screen: CScreens, args: List<String>) {
