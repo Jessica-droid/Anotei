@@ -29,7 +29,7 @@ import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.NOTE_TYPE_EXTRA
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NewNoteActivityResultContract
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
-import br.com.ascence.anotei.navigation.extensions.navigateWithArgs
+import br.com.ascence.anotei.navigation.extensions.navigateToScreen
 import br.com.ascence.anotei.ui.common.components.popup.AppPopup
 import br.com.ascence.anotei.ui.common.components.popup.contents.NoteCategorySelection
 import br.com.ascence.anotei.ui.screens.notelist.NotesListScreen
@@ -64,6 +64,7 @@ fun DashboardScreen(
                     viewModel.fetchNotes()
                     viewModel.resetListScrollState()
                 }
+
                 NOTE_RESULT_NOTHING -> println(">>>>>>>> NOTHING")
             }
         }
@@ -94,7 +95,7 @@ fun DashboardScreen(
             if (state.isSelectionModeActivated) {
                 viewModel.updateNoteSelection(note)
             } else {
-                navController.navigateWithArgs(
+                navController.navigateToScreen(
                     screen = CScreens.NOTE_DISPLAY,
                     args = listOf(note.id.toString(), NoteType.DISPLAY_NOTE.name)
                 )
@@ -105,7 +106,7 @@ fun DashboardScreen(
             viewModel.toggleSelectionMode(true)
         },
         onNewNoteClick = {
-            navController.navigateWithArgs(
+            navController.navigateToScreen(
                 screen = CScreens.NOTE_DISPLAY,
                 args = listOf(NoteType.NEW_NOTE.name)
             )
