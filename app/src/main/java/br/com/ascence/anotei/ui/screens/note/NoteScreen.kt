@@ -231,19 +231,20 @@ fun NoteScreenContent(
                     )
                 }
             }
-            Button(
-                onClick = {
-                    viewModel.enableEditMode()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-            )
-            {
-                Text(text = "Editar")
+            if (isNewNote.not()) {
+                Button(
+                    onClick = {
+                        viewModel.enableEditMode()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                )
+                {
+                    Text(text = "Editar")
+                }
             }
         }
-
     }
 }
 

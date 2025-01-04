@@ -21,7 +21,7 @@ fun <T> NavController.navigateForResultOnce(
             ?.remove<T>(key)
     }
 
-    navigateWithArgs(screen, args)
+    navigateToScreen(screen, args)
 }
 
 fun <T> NavController.popBackStackWithResult(key: String, value: T) {
@@ -31,10 +31,15 @@ fun <T> NavController.popBackStackWithResult(key: String, value: T) {
         ?.set(key, value)
 }
 
-fun NavController.navigateWithArgs(screen: CScreens, args: List<String>) {
-    val separator = "/"
-    val argsPath = separator + args.joinToString(separator)
-    val fullPath = screen.routePath + argsPath
+fun NavController.navigateToScreen(screen: CScreens, args: List<String> = listOf()) {
+
+    val fullPath = if (args.isNotEmpty()) {
+        val separator = "/"
+        val argsPath = separator + args.joinToString(separator)
+        screen.routePath + argsPath
+    } else {
+        screen.routePath
+    }
 
     navigate(fullPath)
 }
