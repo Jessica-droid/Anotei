@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -28,6 +29,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import br.com.ascence.anotei.data.local.AnoteiDatabase
 import br.com.ascence.anotei.data.local.implementations.NotesRepositoryImp
@@ -36,6 +38,8 @@ import br.com.ascence.anotei.model.extension.getColor
 import br.com.ascence.anotei.navigation.NOTE_TYPE_EXTRA
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
 import br.com.ascence.anotei.navigation.extensions.popBackStackWithResult
+import br.com.ascence.anotei.navigation.extensions.toNoteOptionsMode
+import br.com.ascence.anotei.ui.common.components.noteoptions.NoteOptionsWidget
 import br.com.ascence.anotei.ui.common.components.popup.AppPopup
 import br.com.ascence.anotei.ui.common.components.popup.contents.NoteCategorySelection
 import br.com.ascence.anotei.ui.screens.note.NoteScreenViewModel.Companion.TITLE_MAX_LENGTH
@@ -75,15 +79,12 @@ fun NoteScreenContent(
         if (isNewNote) {
             DateHelper().formatDateToString(Date())
         } else {
-            state.creationDate
+            DateHelper().formatDateToString(state.textNote.creationDate)
         }
 
     LaunchedEffect(noteType) {
         when (noteType) {
-            NoteType.NEW_NOTE -> {
-                viewModel.fetchNoteContent(noteType)
-            }
-
+            NoteType.NEW_NOTE -> viewModel.fetchNoteContent(noteType)
             NoteType.UPDATE_NOTE, NoteType.DISPLAY_NOTE -> viewModel.fetchNoteContent(
                 noteType,
                 noteId
@@ -93,7 +94,8 @@ fun NoteScreenContent(
 
     BackHandler(enabled = state.showContentAlert.not()) {
         viewModel.handleOnBackPressed(
-            noteType
+            noteType = noteType,
+            shouldVerifyContent = true
         ) { result -> navController.popBackStackWithResult(NOTE_TYPE_EXTRA, result) }
     }
 
@@ -106,23 +108,39 @@ fun NoteScreenContent(
         topBar = {
             NoteAppBar {
                 viewModel.handleOnBackPressed(
-                    noteType
+                    noteType = noteType,
+                    shouldVerifyContent = true
                 ) { result -> navController.popBackStackWithResult(NOTE_TYPE_EXTRA, result) }
             }
         },
         bottomBar = {
-//            NoteOptionsWidget(
-//                mode = noteType.toNoteOptionsMode(),
-//                selectedNotes = listOfNotNull(note),
-//                onOptionClick = { noteOption -> viewModel.handleNoteOptionClick(noteOption) },
-//                onFABClick = {
-//                    viewModel.handleNote(
-//                        noteType = noteType,
-//                        note = note,
-//                        onSaveNote = { result -> onBackPressed(result) }
-//                    )
-//                },
-//            )
+            if (state.showEditMode) {
+                NoteOptionsWidget(
+                    mode = noteType.toNoteOptionsMode(),
+                    selectedNotes = listOfNotNull(state.textNote),
+                    onOptionClick = { noteOption -> viewModel.handleNoteOptionClick(noteOption) },
+                    onFABClick = {
+                        viewModel.handleNote(
+                            noteType = noteType,
+                            note = state.textNote,
+                            onSaveNote = { onSaveResult ->
+
+                                viewModel.handleOnBackPressed(
+                                    noteType = noteType,
+                                    shouldVerifyContent = false,
+                                    onCloseScreen = {
+                                        navController.popBackStackWithResult(
+                                            NOTE_TYPE_EXTRA,
+                                            onSaveResult
+                                        )
+                                    }
+                                )
+
+                            }
+                        )
+                    },
+                )
+            }
         }
     ) { innerPadding ->
 
@@ -180,8 +198,8 @@ fun NoteScreenContent(
                 }
 
                 NoteHeader(
-                    noteCategoryColor = state.noteCategory.getColor(),
-                    titleInitialValue = state.title,
+                    noteCategoryColor = state.textNote.category.getColor(),
+                    titleInitialValue = state.textNote.title,
                     creationDateValue = noteCreationDate,
                     onTitleChanged = { newTitle ->
                         viewModel.onTitleUpdate(newTitle)
@@ -213,7 +231,7 @@ fun NoteScreenContent(
                     )
 
                     BasicTextField(
-                        value = state.description,
+                        value = state.textNote.description,
                         readOnly = state.showEditMode.not(),
                         textStyle = TextStyle(
                             color = AnoteiAppTheme.colors.secondaryTextColor,
@@ -231,14 +249,16 @@ fun NoteScreenContent(
                     )
                 }
             }
-            if (isNewNote.not()) {
+            if (isNewNote.not() && state.showEditMode.not()) {
                 Button(
+                    shape = RoundedCornerShape(10.dp),
                     onClick = {
                         viewModel.enableEditMode()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
+                        .padding(AnoteiAppTheme.spaces.medium)
                 )
                 {
                     Text(text = "Editar")

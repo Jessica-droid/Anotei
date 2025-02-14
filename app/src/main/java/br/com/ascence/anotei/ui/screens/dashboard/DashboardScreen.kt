@@ -102,8 +102,8 @@ fun DashboardScreen(
             }
         },
         onNoteSelection = { note ->
-            viewModel.updateNoteSelection(note)
             viewModel.toggleSelectionMode(true)
+            viewModel.updateNoteSelection(note)
         },
         onNewNoteClick = {
             navController.navigateToScreen(
