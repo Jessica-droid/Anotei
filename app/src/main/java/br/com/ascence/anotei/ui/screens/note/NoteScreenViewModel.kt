@@ -9,7 +9,6 @@ import br.com.ascence.anotei.model.NoteOption
 import br.com.ascence.anotei.navigation.NOTE_RESULT_CREATED_OR_UPDATED
 import br.com.ascence.anotei.navigation.NOTE_RESULT_NOTHING
 import br.com.ascence.anotei.navigation.activitycontracts.newnote.NoteType
-import br.com.ascence.anotei.utils.date.DateHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,14 +20,14 @@ class NoteScreenViewModel(
     private val notesRepository: NotesRepository,
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(NoteScreenState())
+    private val _uiState = MutableStateFlow(NoteScreenState(textNote = createEmptyNote()))
     val screenState: StateFlow<NoteScreenState> = _uiState.asStateFlow()
 
     fun onTitleUpdate(title: String) {
         if (title.length <= TITLE_MAX_LENGTH) {
             _uiState.update { currentState ->
                 currentState.copy(
-                    title = title,
+                    textNote = currentState.textNote.copy(title = title),
                     descriptionOrTitleHasChanged = true
                 )
             }
@@ -38,7 +37,7 @@ class NoteScreenViewModel(
     fun onDescriptionUpdate(description: String) {
         _uiState.update { currentState ->
             currentState.copy(
-                description = description,
+                textNote = currentState.textNote.copy(description = description),
                 descriptionOrTitleHasChanged = true
             )
         }
@@ -49,9 +48,8 @@ class NoteScreenViewModel(
             NoteType.NEW_NOTE -> {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        creationDate = DateHelper().formatDateToString(Date()),
                         showEditMode = true,
-                        descriptionOrTitleHasChanged = false
+                        descriptionOrTitleHasChanged = false,
                     )
                 }
             }
@@ -60,48 +58,18 @@ class NoteScreenViewModel(
                 noteId?.let {
                     viewModelScope.launch {
                         notesRepository.getNoteStream(it.toInt()).collect { note ->
-                            val textNote = note as Note.TextNote
                             _uiState.update { currentState ->
                                 currentState.copy(
-                                    title = textNote.title,
-                                    creationDate = DateHelper().formatDateToString(textNote.creationDate),
-                                    description = textNote.description,
-                                    noteCategory = textNote.category,
                                     showEditMode = noteType == NoteType.UPDATE_NOTE,
                                     descriptionOrTitleHasChanged = false,
                                     showContentAlert = false,
+                                    textNote = note as Note.TextNote,
                                 )
                             }
                         }
                     }
                 }
-
-//                note?.let {
-//                    _uiState.update { currentState ->
-//                        currentState.copy(
-//                            title = note.title,
-//                            creationDate = DateHelper().formatDateToString(note.creationDate),
-//                            description = note.description,
-//                            noteCategory = note.category,
-//                            showEditMode = true
-//                        )
-//                    }
-//                }
             }
-
-//            NoteType.DISPLAY_NOTE -> {
-//                note?.let {
-//                    _uiState.update { currentState ->
-//                        currentState.copy(
-//                            title = note.title,
-//                            creationDate = DateHelper().formatDateToString(note.creationDate),
-//                            description = note.description,
-//                            noteCategory = note.category,
-//                            showEditMode = false
-//                        )
-//                    }
-//                }
-//            }
         }
     }
 
@@ -125,8 +93,12 @@ class NoteScreenViewModel(
         }
     }
 
-    fun handleOnBackPressed(noteType: NoteType, onCloseScreen: (String) -> Unit) {
-        val shouldShowContentAlert = shouldShowContentAlert(noteType)
+    fun handleOnBackPressed(
+        noteType: NoteType,
+        shouldVerifyContent: Boolean,
+        onCloseScreen: (String) -> Unit,
+    ) {
+        val shouldShowContentAlert = shouldShowContentAlert(noteType, shouldVerifyContent)
 
         _uiState.update { currentState ->
             currentState.copy(
@@ -158,7 +130,7 @@ class NoteScreenViewModel(
     fun updateNoteCategory(category: Category) {
         _uiState.update { currentState ->
             currentState.copy(
-                noteCategory = category
+                textNote = currentState.textNote.copy(category = category),
             )
         }
     }
@@ -175,18 +147,13 @@ class NoteScreenViewModel(
                         showContentAlert = false
                     )
                 }
+                onCloseScreen(NOTE_RESULT_NOTHING)
             }
 
             NoteType.UPDATE_NOTE,
             NoteType.DISPLAY_NOTE,
-            -> {
-                if (_uiState.value.showEditMode) {
-                    fetchNoteContent(noteType, noteId)
-                }
-            }
+            -> fetchNoteContent(noteType, noteId)
         }
-
-        dismissOrDisplayMode(noteType, onCloseScreen)
     }
 
     private fun dismissOrDisplayMode(noteType: NoteType, onCloseScreen: (String) -> Unit) {
@@ -203,6 +170,7 @@ class NoteScreenViewModel(
             _uiState.update { currentState ->
                 currentState.copy(
                     showEditMode = false,
+                    showContentAlert = false
                 )
             }
         } else {
@@ -210,10 +178,10 @@ class NoteScreenViewModel(
         }
     }
 
-    private fun shouldShowContentAlert(noteType: NoteType): Boolean {
+    private fun shouldShowContentAlert(noteType: NoteType, shouldVerifyContent: Boolean): Boolean {
         return when (noteType) {
-            NoteType.NEW_NOTE -> _uiState.value.description.isNotEmpty()
-            NoteType.UPDATE_NOTE, NoteType.DISPLAY_NOTE -> _uiState.value.descriptionOrTitleHasChanged
+            NoteType.NEW_NOTE -> _uiState.value.textNote.description.isNotEmpty()
+            NoteType.UPDATE_NOTE, NoteType.DISPLAY_NOTE -> shouldVerifyContent && _uiState.value.descriptionOrTitleHasChanged
         }
     }
 
@@ -260,11 +228,11 @@ class NoteScreenViewModel(
 
         val noteToUpdate = Note.TextNote(
             id = note.id,
-            title = setupNoteTitle(_uiState.value.title),
+            title = setupNoteTitle(_uiState.value.textNote.title),
             status = emptyList(),
-            category = _uiState.value.noteCategory,
+            category = _uiState.value.textNote.category,
             creationDate = note.creationDate,
-            description = _uiState.value.description
+            description = _uiState.value.textNote.description
         )
 
         viewModelScope.launch {
@@ -278,21 +246,30 @@ class NoteScreenViewModel(
         }
     }
 
-    private fun newTextNoteSetup(): Note =
+    private fun newTextNoteSetup(): Note.TextNote =
         Note.TextNote(
             id = NEW_NOTE_ID,
-            title = setupNoteTitle(_uiState.value.title),
+            title = _uiState.value.textNote.title.let { setupNoteTitle(it) },
             status = emptyList(), // TODO setup note status
-            category = _uiState.value.noteCategory,
+            category = _uiState.value.textNote.category,
             creationDate = Date(),
-            description = _uiState.value.description
+            description = _uiState.value.textNote.description
         )
 
+    private fun createEmptyNote(): Note.TextNote =
+        Note.TextNote(
+            id = NEW_NOTE_ID,
+            title = "",
+            status = emptyList(),
+            description = "",
+            creationDate = Date(),
+            category = Category.DEFAULT
+        )
 
     private fun handleNoteContent() {
         _uiState.update { currentState ->
             currentState.copy(
-                showEmptyNoteAlert = currentState.description.trimStart().isEmpty()
+                showEmptyNoteAlert = currentState.textNote.description.trimStart().isEmpty()
             )
         }
     }
