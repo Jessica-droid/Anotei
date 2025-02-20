@@ -64,7 +64,7 @@ fun NoteScreenContent(
     val repository = NotesRepositoryImp(db.noteDao())
 
     val viewModel = remember {
-        NoteScreenViewModel(repository)
+        NoteScreenViewModel(notesRepository = repository)
     }
 
     val focusRequester = remember { FocusRequester() }
@@ -92,10 +92,9 @@ fun NoteScreenContent(
         }
     }
 
-    BackHandler(enabled = state.showContentAlert.not()) {
+    BackHandler(enabled = state.contentAlert == null) {
         viewModel.handleOnBackPressed(
             noteType = noteType,
-            shouldVerifyContent = true
         ) { result -> navController.popBackStackWithResult(NOTE_TYPE_EXTRA, result) }
     }
 
@@ -109,7 +108,6 @@ fun NoteScreenContent(
             NoteAppBar {
                 viewModel.handleOnBackPressed(
                     noteType = noteType,
-                    shouldVerifyContent = true
                 ) { result -> navController.popBackStackWithResult(NOTE_TYPE_EXTRA, result) }
             }
         },
@@ -127,7 +125,6 @@ fun NoteScreenContent(
 
                                 viewModel.handleOnBackPressed(
                                     noteType = noteType,
-                                    shouldVerifyContent = false,
                                     onCloseScreen = {
                                         navController.popBackStackWithResult(
                                             NOTE_TYPE_EXTRA,
@@ -155,45 +152,26 @@ fun NoteScreenContent(
                     .fillMaxSize()
                     .align(Alignment.Center)
             ) {
-                if (state.showContentAlert) {
+                state.contentAlert?.let {
                     SimpleDialog(
-                        title = "Descartar nota?",
-                        message = "Deseja descartar o que anotou até o momento?",
-                        confirmLabel = "Confirmar",
-                        dismissLabel = "Cancelar",
-                        onDismiss = { viewModel.hideAlertDialog() },
+                        title = it.title,
+                        message = it.message,
+                        confirmLabel = it.confirmButtonLabel,
+                        dismissLabel = it.dismissButtonLabel,
                         onConfirm = {
-                            viewModel.dismissContentAlertDialog(
-                                noteType,
-                                noteId
-                            ) { result ->
-                                navController.popBackStackWithResult(
-                                    NOTE_TYPE_EXTRA,
-                                    result
-                                )
-                            }
-                        }
-                    )
-                }
-
-                if (state.showEmptyNoteAlert) {
-                    SimpleDialog(
-                        title = "Um momento!",
-                        message = "Anote alguma coisa antes de salvar.",
-                        confirmLabel = "Entendi",
-                        onDismiss = { viewModel.hideAlertDialog() },
-                        onConfirm = { viewModel.hideAlertDialog() }
-                    )
-                }
-
-                if (state.showNoteDiscardAlert) {
-                    SimpleDialog(
-                        title = "Descartar nota",
-                        message = "Deseja realmente descartar esta nota?",
-                        confirmLabel = "Confirmar",
-                        dismissLabel = "Cancelar",
-                        onDismiss = { viewModel.hideAlertDialog() },
-                        onConfirm = { viewModel.hideAlertDialog() }
+                            viewModel.handleAlertOption(
+                                alertType = it,
+                                noteType = noteType,
+                                noteId = noteId,
+                                onCloseScreen = { result ->
+                                    navController.popBackStackWithResult(
+                                        NOTE_TYPE_EXTRA,
+                                        result
+                                    )
+                                }
+                            )
+                        },
+                        onDismiss = { viewModel.hideAlertDialog() }
                     )
                 }
 

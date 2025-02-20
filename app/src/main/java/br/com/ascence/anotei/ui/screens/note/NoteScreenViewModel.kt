@@ -3,6 +3,8 @@ package br.com.ascence.anotei.ui.screens.note
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.ascence.anotei.data.local.repositories.NotesRepository
+import br.com.ascence.anotei.data.usecase.alert.NoteAlertManager
+import br.com.ascence.anotei.model.AlertType
 import br.com.ascence.anotei.model.Category
 import br.com.ascence.anotei.model.Note
 import br.com.ascence.anotei.model.NoteOption
@@ -18,6 +20,7 @@ import java.util.Date
 
 class NoteScreenViewModel(
     private val notesRepository: NotesRepository,
+    private val alertService: NoteAlertManager = NoteAlertManager(),
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(NoteScreenState(textNote = createEmptyNote()))
@@ -25,20 +28,26 @@ class NoteScreenViewModel(
 
     fun onTitleUpdate(title: String) {
         if (title.length <= TITLE_MAX_LENGTH) {
+
+            alertService.setupFotContentChangeOnly()
+
             _uiState.update { currentState ->
                 currentState.copy(
-                    textNote = currentState.textNote.copy(title = title),
-                    descriptionOrTitleHasChanged = true
+                    textNote = currentState.textNote.copy(title = title)
                 )
             }
         }
     }
 
     fun onDescriptionUpdate(description: String) {
+
+        alertService.setupAlertsForNoteDescriptionChange(
+            isContentEmpty = description.trimStart().isEmpty()
+        )
+
         _uiState.update { currentState ->
             currentState.copy(
-                textNote = currentState.textNote.copy(description = description),
-                descriptionOrTitleHasChanged = true
+                textNote = currentState.textNote.copy(description = description)
             )
         }
     }
@@ -46,10 +55,12 @@ class NoteScreenViewModel(
     fun fetchNoteContent(noteType: NoteType, noteId: String? = null) {
         when (noteType) {
             NoteType.NEW_NOTE -> {
+
+                alertService.setupAlertsForNoteCreation()
+
                 _uiState.update { currentState ->
                     currentState.copy(
                         showEditMode = true,
-                        descriptionOrTitleHasChanged = false,
                     )
                 }
             }
@@ -58,11 +69,13 @@ class NoteScreenViewModel(
                 noteId?.let {
                     viewModelScope.launch {
                         notesRepository.getNoteStream(it.toInt()).collect { note ->
+
+                            alertService.setupAlertsForNoteUpdateOrEdit()
+
                             _uiState.update { currentState ->
                                 currentState.copy(
                                     showEditMode = noteType == NoteType.UPDATE_NOTE,
-                                    descriptionOrTitleHasChanged = false,
-                                    showContentAlert = false,
+                                    contentAlert = null,
                                     textNote = note as Note.TextNote,
                                 )
                             }
@@ -85,9 +98,7 @@ class NoteScreenViewModel(
     fun hideAlertDialog() {
         _uiState.update { currentState ->
             currentState.copy(
-                showContentAlert = false,
-                showEmptyNoteAlert = false,
-                showNoteDiscardAlert = false,
+                contentAlert = null,
                 showCategoryPopup = false,
             )
         }
@@ -95,28 +106,54 @@ class NoteScreenViewModel(
 
     fun handleOnBackPressed(
         noteType: NoteType,
-        shouldVerifyContent: Boolean,
         onCloseScreen: (String) -> Unit,
     ) {
-        val shouldShowContentAlert = shouldShowContentAlert(noteType, shouldVerifyContent)
+
+        alertService.setupAlertForBackNavigation()
 
         _uiState.update { currentState ->
             currentState.copy(
-                showContentAlert = shouldShowContentAlert,
+                contentAlert = alertService.checkForAlerts(noteType),
             )
         }
 
-        if (_uiState.value.showContentAlert.not()) {
+        if (_uiState.value.contentAlert == null) {
             dismissOrDisplayMode(noteType, onCloseScreen)
         }
     }
 
-    fun handleNote(noteType: NoteType, note: Note?, onSaveNote: (String) -> Unit) {
-        handleNoteContent()
+    fun handleAlertOption(
+        noteType: NoteType,
+        noteId: String?,
+        alertType: AlertType,
+        onCloseScreen: (String) -> Unit,
+    ) {
+        when (alertType) {
+            AlertType.CONFIRM_NOTE_DISCARD -> dismissContentAlertDialog(
+                noteType,
+                noteId,
+                onCloseScreen
+            )
 
-        if (_uiState.value.showEmptyNoteAlert.not()) {
+            AlertType.EMPTY_NOTE_CONTENT -> hideAlertDialog()
+            AlertType.DELETE_NOTE_CONFIRMATION -> hideAlertDialog()
+        }
+    }
+
+    fun handleNote(noteType: NoteType, note: Note?, onSaveNote: (String) -> Unit) {
+
+        alertService.setupAlertForSavingNote()
+
+        _uiState.update { currentState ->
+            currentState.copy(
+                contentAlert = alertService.checkForAlerts(noteType),
+            )
+        }
+
+        if (_uiState.value.contentAlert == null) {
             saveOrUpdateNote(noteType, note, onSaveNote)
         }
+
     }
 
     fun enableEditMode() {
@@ -135,7 +172,7 @@ class NoteScreenViewModel(
         }
     }
 
-    fun dismissContentAlertDialog(
+    private fun dismissContentAlertDialog(
         noteType: NoteType,
         noteId: String? = null,
         onCloseScreen: (String) -> Unit,
@@ -144,7 +181,7 @@ class NoteScreenViewModel(
             NoteType.NEW_NOTE -> {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        showContentAlert = false
+                        contentAlert = null
                     )
                 }
                 onCloseScreen(NOTE_RESULT_NOTHING)
@@ -170,7 +207,7 @@ class NoteScreenViewModel(
             _uiState.update { currentState ->
                 currentState.copy(
                     showEditMode = false,
-                    showContentAlert = false
+                    contentAlert = null
                 )
             }
         } else {
@@ -178,17 +215,10 @@ class NoteScreenViewModel(
         }
     }
 
-    private fun shouldShowContentAlert(noteType: NoteType, shouldVerifyContent: Boolean): Boolean {
-        return when (noteType) {
-            NoteType.NEW_NOTE -> _uiState.value.textNote.description.isNotEmpty()
-            NoteType.UPDATE_NOTE, NoteType.DISPLAY_NOTE -> shouldVerifyContent && _uiState.value.descriptionOrTitleHasChanged
-        }
-    }
-
     private fun showDeleteNoteAlert() {
         _uiState.update { currentState ->
             currentState.copy(
-                showNoteDiscardAlert = true
+                contentAlert = AlertType.DELETE_NOTE_CONFIRMATION
             )
         }
     }
@@ -265,14 +295,6 @@ class NoteScreenViewModel(
             creationDate = Date(),
             category = Category.DEFAULT
         )
-
-    private fun handleNoteContent() {
-        _uiState.update { currentState ->
-            currentState.copy(
-                showEmptyNoteAlert = currentState.textNote.description.trimStart().isEmpty()
-            )
-        }
-    }
 
     private fun setupNoteTitle(currentTitle: String) =
         currentTitle.ifBlank {
