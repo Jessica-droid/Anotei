@@ -10,12 +10,10 @@ class NoteAlertManager {
     private var noteContentIsEmpty: Boolean = true
     private var noteContentHasChanged: Boolean = false
 
-    fun checkForAlerts(noteType: NoteType): AlertType? =
+    fun checkForAlerts(noteType: NoteType, isEditModeEnabled: Boolean): AlertType? =
         when (noteType) {
             NoteType.NEW_NOTE -> checkForNoteCreationAlerts(noteType)
-
-            NoteType.UPDATE_NOTE -> TODO()
-            NoteType.DISPLAY_NOTE -> TODO()
+            NoteType.DISPLAY_NOTE -> checkForNoteEditingAlerts(isEditModeEnabled)
         }
 
     fun setupAlertsForNoteCreation() {
@@ -55,7 +53,7 @@ class NoteAlertManager {
     private fun checkForNoteDiscardAlert(noteType: NoteType): AlertType? {
         val shouldShowContentAlert = when (noteType) {
             NoteType.NEW_NOTE -> noteContentIsEmpty.not()
-            NoteType.UPDATE_NOTE, NoteType.DISPLAY_NOTE -> noteContentHasChanged
+            NoteType.DISPLAY_NOTE -> noteContentHasChanged
         }
 
         return if (shouldShowContentAlert) AlertType.CONFIRM_NOTE_DISCARD else null
@@ -63,4 +61,12 @@ class NoteAlertManager {
 
     private fun checkForEmptyNoteAlert(): AlertType? =
         if (noteContentIsEmpty) AlertType.EMPTY_NOTE_CONTENT else null
+
+    private fun checkForNoteEditingAlerts(isEditModeEnabled: Boolean): AlertType? =
+        when {
+            startingBackNavigation && isEditModeEnabled.not() -> null
+            startingBackNavigation && isEditModeEnabled -> checkForNoteDiscardAlert(noteType = NoteType.DISPLAY_NOTE)
+            isSavingNote -> checkForEmptyNoteAlert()
+            else -> null
+        }
 }

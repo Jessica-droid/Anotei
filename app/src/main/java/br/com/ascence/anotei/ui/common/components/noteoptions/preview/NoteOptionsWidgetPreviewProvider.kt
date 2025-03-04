@@ -12,7 +12,6 @@ internal data class NoteOptionsPreviewParams(
     val selectionModeActivated: Boolean,
 )
 
-
 internal val fakeSelectedNote = listOf(
     Note.TextNote(
         id = 0,
