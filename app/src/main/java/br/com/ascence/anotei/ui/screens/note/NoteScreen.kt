@@ -85,7 +85,7 @@ fun NoteScreenContent(
     LaunchedEffect(noteType) {
         when (noteType) {
             NoteType.NEW_NOTE -> viewModel.fetchNoteContent(noteType)
-            NoteType.UPDATE_NOTE, NoteType.DISPLAY_NOTE -> viewModel.fetchNoteContent(
+            NoteType.DISPLAY_NOTE -> viewModel.fetchNoteContent(
                 noteType,
                 noteId
             )
@@ -122,17 +122,14 @@ fun NoteScreenContent(
                             noteType = noteType,
                             note = state.textNote,
                             onSaveNote = { onSaveResult ->
-
-                                viewModel.handleOnBackPressed(
+                                viewModel.dismissOrDisplayMode(
                                     noteType = noteType,
                                     onCloseScreen = {
                                         navController.popBackStackWithResult(
                                             NOTE_TYPE_EXTRA,
                                             onSaveResult
                                         )
-                                    }
-                                )
-
+                                    })
                             }
                         )
                     },

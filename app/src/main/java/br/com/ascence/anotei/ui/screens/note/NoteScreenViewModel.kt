@@ -3,6 +3,7 @@ package br.com.ascence.anotei.ui.screens.note
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.ascence.anotei.data.local.repositories.NotesRepository
+import br.com.ascence.anotei.data.usecase.NoteDisplayManager
 import br.com.ascence.anotei.data.usecase.alert.NoteAlertManager
 import br.com.ascence.anotei.model.AlertType
 import br.com.ascence.anotei.model.Category
@@ -21,6 +22,7 @@ import java.util.Date
 class NoteScreenViewModel(
     private val notesRepository: NotesRepository,
     private val alertService: NoteAlertManager = NoteAlertManager(),
+    private val displayManager: NoteDisplayManager = NoteDisplayManager(),
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(NoteScreenState(textNote = createEmptyNote()))
@@ -53,6 +55,9 @@ class NoteScreenViewModel(
     }
 
     fun fetchNoteContent(noteType: NoteType, noteId: String? = null) {
+
+        displayManager.setupInitialVisibility(noteType)
+
         when (noteType) {
             NoteType.NEW_NOTE -> {
 
@@ -60,12 +65,12 @@ class NoteScreenViewModel(
 
                 _uiState.update { currentState ->
                     currentState.copy(
-                        showEditMode = true,
+                        showEditMode = displayManager.getEditModeVisibility(),
                     )
                 }
             }
 
-            NoteType.UPDATE_NOTE, NoteType.DISPLAY_NOTE -> {
+            NoteType.DISPLAY_NOTE -> {
                 noteId?.let {
                     viewModelScope.launch {
                         notesRepository.getNoteStream(it.toInt()).collect { note ->
@@ -74,7 +79,7 @@ class NoteScreenViewModel(
 
                             _uiState.update { currentState ->
                                 currentState.copy(
-                                    showEditMode = noteType == NoteType.UPDATE_NOTE,
+                                    showEditMode = displayManager.getEditModeVisibility(),
                                     contentAlert = null,
                                     textNote = note as Note.TextNote,
                                 )
@@ -113,7 +118,10 @@ class NoteScreenViewModel(
 
         _uiState.update { currentState ->
             currentState.copy(
-                contentAlert = alertService.checkForAlerts(noteType),
+                contentAlert = alertService.checkForAlerts(
+                    noteType = noteType,
+                    isEditModeEnabled = displayManager.getEditModeVisibility()
+                ),
             )
         }
 
@@ -146,7 +154,10 @@ class NoteScreenViewModel(
 
         _uiState.update { currentState ->
             currentState.copy(
-                contentAlert = alertService.checkForAlerts(noteType),
+                contentAlert = alertService.checkForAlerts(
+                    noteType = noteType,
+                    isEditModeEnabled = displayManager.getEditModeVisibility()
+                ),
             )
         }
 
@@ -159,7 +170,7 @@ class NoteScreenViewModel(
     fun enableEditMode() {
         _uiState.update { currentState ->
             currentState.copy(
-                showEditMode = true
+                showEditMode = displayManager.enableEditMode(enable = true)
             )
         }
     }
@@ -187,26 +198,18 @@ class NoteScreenViewModel(
                 onCloseScreen(NOTE_RESULT_NOTHING)
             }
 
-            NoteType.UPDATE_NOTE,
             NoteType.DISPLAY_NOTE,
             -> fetchNoteContent(noteType, noteId)
         }
     }
 
-    private fun dismissOrDisplayMode(noteType: NoteType, onCloseScreen: (String) -> Unit) {
-        val shouldBackToDisplayMode =
-            when (noteType) {
-                NoteType.UPDATE_NOTE,
-                NoteType.DISPLAY_NOTE,
-                -> _uiState.value.showEditMode
-
-                NoteType.NEW_NOTE -> false
-            }
+    fun dismissOrDisplayMode(noteType: NoteType, onCloseScreen: (String) -> Unit) {
+        val shouldBackToDisplayMode = displayManager.shouldReturnToDisplayMode(noteType)
 
         if (shouldBackToDisplayMode) {
             _uiState.update { currentState ->
                 currentState.copy(
-                    showEditMode = false,
+                    showEditMode = displayManager.enableEditMode(enable = false),
                     contentAlert = null
                 )
             }
@@ -234,7 +237,7 @@ class NoteScreenViewModel(
     private fun saveOrUpdateNote(noteType: NoteType, note: Note?, onSaveNote: (String) -> Unit) {
         when (noteType) {
             NoteType.NEW_NOTE -> createNote(onSaveNote)
-            NoteType.UPDATE_NOTE, NoteType.DISPLAY_NOTE -> note?.let {
+            NoteType.DISPLAY_NOTE -> note?.let {
                 updateNote(it, onSaveNote)
             }
         }

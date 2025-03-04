@@ -111,11 +111,6 @@ fun DashboardScreen(
                 args = listOf(NoteType.NEW_NOTE.name)
             )
         },
-        onAlterNoteClick = {
-            noteScreen.launch(NoteType.UPDATE_NOTE)
-            viewModel.updateNoteSelection(null)
-            viewModel.updateOptionsVisibility(showOptions = false)
-        },
         showCategoryPopup = state.showCategoryPopup,
         onNoteCategorySelected = { category ->
             viewModel.updateSelectedNoteCategory(category)
@@ -136,7 +131,6 @@ private fun DashBoardContent(
     onNoteSelection: (Note) -> Unit,
     onNoteOptionsClick: (NoteOption) -> Unit,
     onNewNoteClick: () -> Unit,
-    onAlterNoteClick: () -> Unit,
     showCategoryPopup: Boolean,
     onNoteCategorySelected: (Category) -> Unit,
     onDismissCategoryPopup: () -> Unit,
@@ -157,7 +151,7 @@ private fun DashBoardContent(
                 showBottomBar = showNoteOptions,
                 isSelectionModeActivated = isNoteSelectionActivated,
                 selectedNotes = selectedNoteList,
-                onFABClick = onAlterNoteClick,
+                onFABClick = {},
                 onOptionClick = onNoteOptionsClick
             )
         }
@@ -205,7 +199,6 @@ fun DashboardPreview() {
             onNoteClick = { _ -> },
             onNoteSelection = { _ -> },
             onNewNoteClick = {},
-            onAlterNoteClick = {},
             showCategoryPopup = false,
             onNoteCategorySelected = {},
             onDismissCategoryPopup = {},
@@ -227,7 +220,6 @@ fun DashboardEmptyStatePreview() {
             onNoteClick = { _ -> },
             onNoteSelection = { _ -> },
             onNewNoteClick = {},
-            onAlterNoteClick = {},
             showCategoryPopup = false,
             onNoteCategorySelected = {},
             onDismissCategoryPopup = {},
